@@ -49,6 +49,8 @@ void Scene::Handle(const SDL_Event* e)
 	if (e->type >= SDL_USEREVENT)
 	{
 		InternHandle(e);
+		if (mEditing)
+			mEditor.Handle(e);
 		mCam.Handle(e);
 		auto area = mCam.GetRect();
 		mTM.Handle(e, area);
@@ -161,7 +163,7 @@ const std::shared_ptr<Player> Scene::GetPlayer() const
 			}
 		}
 #if _DEBUG
-		LOG("Scene couln'd find player, therefore const GetPlayer returns nullptr");
+		LOG_PUSH("Scene couln'd find player, therefore const GetPlayer returns nullptr");
 		throw;
 #endif
 		return nullptr;
@@ -202,7 +204,7 @@ std::shared_ptr<Player> Scene::GetPlayer()
 			}
 		}
 #if _DEBUG
-		LOG("Scene couln'd find player, therefore GetPlayer returns nullptr");
+		LOG_PUSH("Scene couln'd find player, therefore GetPlayer returns nullptr");
 		throw;
 #endif
 		return nullptr;
@@ -241,12 +243,41 @@ void Scene::InternHandle(const SDL_Event* e)
 			mEditing = checked;
 		}
 	}
-	
 }
 
 
 
 
+
+void Editor::Handle(const SDL_Event* e)
+{
+	std::string name;
+	float sliderVal;
+	if (EventReceiver::Slider(e, name, sliderVal))
+	{
+		if (name == "editorLayerSlider")
+		{
+			if (sliderVal == 0)
+			{
+				mLayer = TILE_BOTTOM;
+			}
+			else if (sliderVal == .5)
+			{
+				mLayer = ENTITY;
+			}
+			else if (sliderVal == 1)
+			{
+				mLayer = TILE_TOP;
+			}
+#ifdef _DEBUG
+			else
+			{
+				throw;
+			}
+#endif // _DEBUG
+		}
+	}
+}
 
 void Editor::Update(Scene* scene)
 {
@@ -264,9 +295,9 @@ void Editor::ClearSelection()
 
 void Editor::DoCamDrag()
 {
-	if (Input::GetMouse(Input::LMB).Hold())
+	if (Input::GetMouse(Input::LMB,Input::EDITOR).Hold())
 	{
-		std::cout << "editorDrag\n";
+		//DB_OUT("editorDrag");
 		auto pos = Input::GetRelativeMousePos();
 		auto scale = Scene::Get()->GetCamera().GetScale();
 		EventBuilder::CameraRelPos(SDL_FPoint{ -(pos.x / scale.x),-(pos.y / scale.y) });
@@ -284,10 +315,10 @@ void Editor::DoCamDrag()
 void Editor::DoSelceting(Scene* scene)
 {
 	//reset selection
-	if (Input::GetMouse(Input::MMB).Down())
+	if (Input::GetMouse(Input::MMB, Input::EDITOR).Down())
 	{
 		ClearSelection();
-		std::cout << "reset\n";
+		DB_OUT("reset");
 	}
 
 	//select 
@@ -297,7 +328,7 @@ void Editor::DoSelceting(Scene* scene)
 		mSelectionArea.w = pos.x - mSelectionArea.x;
 		mSelectionArea.h = pos.y - mSelectionArea.y;
 	}
-	if (Input::GetMouse(Input::RMB).Up() && mSelecting)
+	if (Input::GetMouse(Input::RMB, Input::EDITOR).Up() && mSelecting)
 	{
 		mSelecting = false;
 
@@ -306,9 +337,9 @@ void Editor::DoSelceting(Scene* scene)
 			if (mLayer == TILE_BOTTOM || mLayer == TILE_TOP)
 			{
 				scene->mTM.Get(mSelectionArea, mSelectTileSize, mSelectedTiles);
-				std::cout << mSelectedTiles.size() << std::endl;
+				//std::cout << mSelectedTiles.size() << std::endl;
 
-				std::cout << "seledcted\n";
+				DB_OUT("seledcted");
 			}
 			else if (mLayer == ENTITY)
 			{
@@ -316,7 +347,7 @@ void Editor::DoSelceting(Scene* scene)
 			}
 		}
 	}
-	else if (Input::GetMouse(Input::RMB).Down())
+	else if (Input::GetMouse(Input::RMB,Input::EDITOR).Down())
 	{
 		ClearSelection();
 		mSelecting = true;
@@ -357,8 +388,11 @@ void Editor::Draw(Scene* scene)
 		break;
 	case Editor::LAST_LAYER:
 	default:
-		std::cout << "unknown editor layer";
+#ifdef _DEBUG
+		DB_OUT("unknown editor layer");
 		throw;
+#endif
+		break;
 	}
 	if (mSelecting || !mSelectedEntities.empty() || !mSelectedTiles.empty())
 	{

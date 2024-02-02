@@ -52,7 +52,7 @@ public:
 			p->SetStats(StatPack(1, 1, 100.0f));
 			if (mScene.InsertEntity(p))
 			{
-				std::cout << "inserted\n";
+				DB_OUT("inserted");
 			}
 		}
 		else
@@ -65,7 +65,7 @@ public:
 			}
 			catch (std::exception& e)
 			{
-				LOG(e.what());
+				LOG_PUSH(e.what());
 				std::cout << e.what();
 				return false;
 			}
@@ -125,7 +125,7 @@ public:
 		catch (std::exception& e)
 		{
 			std::cout << e.what();
-			LOG(e.what());
+			LOG_PUSH(e.what());
 		}
 		Renderer::Free();
 		Window::Free();

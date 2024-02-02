@@ -31,9 +31,9 @@ namespace ui
 				mReclickTime = 0;
 			}
 		}
-		if (contain(mArea, Input::GetMousePos()) && Input::GetMouse(Input::LMB).Down() && !mClicked)
+		if (contain(mArea, Input::GetMousePos()) && Input::GetMouse(Input::LMB,LAYER_UI).Down() && !mClicked)
 		{
-			Input::Handled(Input::LMB);
+			Input::Handled(Input::LMB, LAYER_UI);
 			mBackgroundTint = mClickedTint;
 			mClicked = true;
 			EventBuilder::Button(mName);

@@ -32,6 +32,7 @@ class Editor
 	bool mSelecting = false;
 
 public:
+	void Handle(const SDL_Event* e);
 	void Update(Scene* scene);
 	void ClearSelection();
 	void DoCamDrag();

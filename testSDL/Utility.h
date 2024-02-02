@@ -9,12 +9,18 @@ inline std::vector<std::string> loger;
 	#define DEBUG
 #endif // _DEBUG
 
+#if _DEBUG
+	#define DB_OUT(msg) std::cout << msg << std::endl
+#else
+	#define DB_OUT(msg)
+#endif 
 
-#define LOG(msg) (std::string((msg)) + " file: " + __FILE__ + " line: " + std::to_string(__LINE__))
-#define LOG_PUSH(msg) loger.push_back(LOG(msg))
+
+#define LOG_STR(msg) (std::string((msg)) + " file: " + __FILE__ + " line: " + std::to_string(__LINE__))
+#define LOG_PUSH(msg) loger.push_back(LOG_STR(msg))
 
 #ifdef _DEBUG
-	#define SDLCHECK(returnVal) if ((returnVal) < 0) {std::cout << "SDL error: " << SDL_GetError() << LOG(" at") <<'\n';} //else {std::cout << "Success " << LOG(" at") << '\n';}
+	#define SDLCHECK(returnVal) if ((returnVal) < 0) {std::cout << "SDL error: " << SDL_GetError() << LOG_STR(" at") <<'\n';} //else {std::cout << "Success " << LOG(" at") << '\n';}
 #else
 	#define SDLCHECK(returnVal) (returnVal)
 #endif

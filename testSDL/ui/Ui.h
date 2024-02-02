@@ -4,6 +4,12 @@
 #include <stdint.h>
 #include <memory>
 
+
+// if you cahnge this value see Input.h an change Input::layer::UI_X
+#define MAX_UI_DEPTH 16 
+
+#define LAYER_UI (Input::Layer)(Input::UI - mDepth -1)
+
 namespace ui
 {
 	enum WidgetPostion// relative to parent
@@ -20,8 +26,9 @@ namespace ui
 	protected:  
 		SDL_FRect mArea, mBorder = { 0,0,0,0 };
 		std::vector<std::unique_ptr<Widget>> mChilds;
-		bool mActive = true;
 		std::string mName = "";
+		int mDepth = -1;
+		bool mActive = true;
 		//used to prevent multible calls into DebugDrawChildrin/DrawChildrin 
 		bool mChildrinDrawFlag = false;
 		bool mChildrinDebugDrawFlag = false;
@@ -36,6 +43,8 @@ namespace ui
 		void Move(int xOffset, int yOffset);
 		const std::string& GetName() const;
 		const SDL_FRect& GetArea() const;
+		int GetDepth() const;
+
 
 		Widget* SetBorder(SDL_FRect size);
 

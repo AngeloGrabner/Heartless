@@ -33,7 +33,7 @@ void ui::InputField::Update()
 		return;
 	Widget::Update();
 	if (contain(mArea, Input::GetMousePos()) &&
-		Input::GetMouse(Input::LMB).Down())
+		Input::GetMouse(Input::LMB, LAYER_UI).Down())
 	{
 		mSelected = true;
 		Input::SetKeyboardMode(true);

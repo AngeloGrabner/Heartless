@@ -31,7 +31,7 @@ void ui::Manager::Handle(const SDL_Event* e)
 
 void ui::Manager::Update()
 {
-	for (int i = 0; i < mWidgets.size(); i++)
+	for (int i = mWidgets.size() -1 ; i >= 0; i--)
 	{
 		mWidgets[i]->Update();
 	}
@@ -71,10 +71,10 @@ void ui::Manager::Activate(const std::string& name, bool active)
 void ui::Manager::Init()
 {
 	SDL_Point winSize = Window::GetSize();
-	float aspectRatio = winSize.x / (float)winSize.x;
+	float aspectRatio = winSize.x / (float)winSize.y;
 
 	{ // editor checkbox
-		SDL_FRect boxArea = SDL_FRect(0, 0, winSize.x / 10.0f, winSize.y / 10.0f);
+		SDL_FRect boxArea = SDL_FRect(0, 0, winSize.x / 15.0f , winSize.y* aspectRatio / 15.0f);
 		ui::Widget* editorBox =
 			(new ui::CheckBox(nullptr, boxArea, "editorCheckBox", WIDGET_BOTTOM, WIDGET_RIGHT))
 			->SetTextures(4, 5); // see data.csv 
@@ -82,17 +82,29 @@ void ui::Manager::Init()
 	}
 
 	{ // editor pannel 
-		SDL_FRect frameArea = SDL_FRect(0, 0, winSize.x / 6.0f, winSize.y / 10.0f * 8.0f);
+		SDL_FRect frameArea = SDL_FRect(0, 0, winSize.x / 6.0f, winSize.y / 10.0f * 4.5 * aspectRatio);
 		
 		ui::Widget* editorFrame =
 			(new ui::Frame(nullptr, frameArea, "editorFrame", 1, WIDGET_RIGHT, WIDGET_TOP))
 			->Activate(false);
-
-		SDL_FRect sliderArea = SDL_FRect(0, 0, editorFrame->GetArea().w / 3.0f, editorFrame->GetArea().h / 15.0f);
-
-		ui::Widget* layerSlider =
-			(new ui::Slider(editorFrame, sliderArea, "editorLayerSlider",false, WIDGET_CENTER, WIDGET_TOP,4,{16,32}));
-
+		
 		mWidgets.push_back(std::unique_ptr<ui::Widget>(editorFrame));
+		
+		Widget* layerDiv = new ui::Div(editorFrame,SDL_FRect(0, 5, editorFrame->GetArea().w, editorFrame->GetArea().h / 15.0f),WIDGET_CENTER,WIDGET_TOP);
+		
+		{
+
+			SDL_FRect sliderArea = SDL_FRect(0, 0,layerDiv->GetArea().w/2.0f, layerDiv->GetArea().h);
+
+			ui::Widget* layerSlider =
+				(new ui::Slider(layerDiv, sliderArea, "editorLayerSlider", false, WIDGET_RIGHT, WIDGET_CENTER, 4, { layerDiv->GetArea().h/2.0f,layerDiv->GetArea().h-2 }))
+				->SetSnappiness(true, 3);
+
+			SDL_FRect textboxArea = SDL_FRect(0, 0, layerDiv->GetArea().w / 2.0f, layerDiv->GetArea().h);
+
+			ui::Widget* layerSliderLable =
+				(new ui::Label(layerDiv, textboxArea, "editorLayerLable", WIDGET_LEFT, WIDGET_CENTER))
+				->SetText("Layer");
+		}
 	}
 }

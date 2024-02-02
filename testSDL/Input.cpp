@@ -2,9 +2,9 @@
 #include <stdexcept>
 #include <iostream>
 
-std::unordered_map<int, Input::Key> Input::sKeys;
+Input::KeyMap Input::sKeys;
 SDL_Point Input::sPos = { 0,0 };
-std::pair<Input::MouseState, bool>  Input::sButtons[];
+Input::MouseT Input::sButtons[];
 SDL_Point Input::sRelativePos;
 std::string Input::sTextInput;
 bool Input::sKeyboardMode = false;
@@ -15,19 +15,20 @@ void Input::Init()
 	for (int i = 0; i < BUTTON_COUNT; i++)
 	{
 		sButtons[i].first = UP;
-		sButtons[i].second = false;
+		sButtons[i].second.set();
 	}
+
 	//commen keys inited for use 
-	sKeys['\r'] = {UP,KMOD_NONE};
-	sKeys['\x1b'] = {UP,KMOD_NONE};
-	sKeys['\t'] = { UP,KMOD_NONE };
+	//sKeys['\r'].first = {UP,KMOD_NONE};
+	//sKeys['\x1b'].first = {UP,KMOD_NONE};
+	//sKeys['\t'].first = { UP,KMOD_NONE };
 	for (char i = ' '; i <= '@'; i++)
 	{
-		sKeys[i] = { UP,KMOD_NONE };
+		sKeys[i].second.set();
 	}
 	for (char i = '['; i <= '~'; i++)
 	{
-		sKeys[i] = { UP,KMOD_NONE };
+		sKeys[i].second.set();
 	}
 }
 
@@ -35,15 +36,17 @@ void Input::Update()
 {
 	for (auto& k : sKeys) // clears down keys
 	{
-		if (k.second.ks == DOWN)
-			k.second.ks = HOLD;
-		k.second.handled = false;
+		if (k.second.first.ks == DOWN)
+			k.second.first.ks = HOLD;
+		else if (k.second.first.ks == UP)
+			k.second.second.set();
 	}
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < BUTTON_COUNT; i++)
 	{
 		if (sButtons[i].first == DOWN)
 			sButtons[i].first = HOLD;
-		sButtons[i].second = false;
+		else if (sButtons[i].first == UP)
+			sButtons[i].second.set();
 	}
 	sRelativePos = { 0,0 };	
 	sWheel = { 0,0 };
@@ -78,7 +81,7 @@ void Input::EventHandler(const SDL_Event* e)
 		break;
 	case SDL_KEYDOWN:
 		if (!sKeyboardMode)
-			sKeys[e->key.keysym.sym] = { DOWN,e->key.keysym.mod };
+			sKeys[e->key.keysym.sym].first = { DOWN,e->key.keysym.mod };
 		else if (e->key.keysym.sym == SDLK_RETURN)
 			sTextInput.push_back('\n');
 		else if (e->key.keysym.sym == SDLK_BACKSPACE)
@@ -86,7 +89,7 @@ void Input::EventHandler(const SDL_Event* e)
 		break;
 	case SDL_KEYUP:
 		if (!sKeyboardMode)
-			sKeys[e->key.keysym.sym] = { UP, SDL_Keymod::KMOD_NONE };
+			sKeys[e->key.keysym.sym].first = { UP, SDL_Keymod::KMOD_NONE };
 		break;
 	case SDL_MOUSEMOTION:
 		sPos.x = e->motion.x;
@@ -139,16 +142,18 @@ void Input::EventHandler(const SDL_Event* e)
 	}
 }
 
-Input::Key Input::GetKey(SDL_KeyCode key)
+Input::Key Input::GetKey(SDL_KeyCode key, Input::Layer layer)
 {
-	try
+	if (sKeys.find(key) == sKeys.end()) // if a key wasnt inited we create it here, so we dont crash due to oufofbounce
 	{
-		return sKeys.at(key);
+		sKeys[key] = std::pair<Key, std::bitset<Layer::LAYER_COUNT>>();
+		sKeys[key].second.set();
 	}
-	catch (std::out_of_range& e)
+	if (sKeys[key].second[layer])
 	{
-		return Input::Key(UP, SDL_Keymod::KMOD_NONE);
+		return sKeys[key].first;
 	}
+	return Input::Key(UP, SDL_Keymod::KMOD_NONE);
 }
 
 SDL_Point Input::GetMousePos()
@@ -161,9 +166,11 @@ SDL_Point Input::GetRelativeMousePos()
 	return sRelativePos;
 }
 
-Input::Mouse Input::GetMouse(MouseButton mb)
+Input::Mouse Input::GetMouse(MouseButton mb, Input::Layer layer)
 {
-	return Mouse(!sButtons[mb].second ? sButtons[mb].first : MouseState::UP);
+	if (sButtons[mb].second[layer])
+		return Mouse(sButtons[mb].first);
+	return Mouse();
 }
 
 const std::string& Input::GetTextChunk()
@@ -171,19 +178,20 @@ const std::string& Input::GetTextChunk()
 	return sTextInput;
 }
 
-void Input::Handled(SDL_KeyCode key)
+void Input::Handled(SDL_KeyCode key, Input::Layer layer)
 {
-	try
+	for (int i = layer+1; i < Input::LAYER_COUNT; i++)
 	{
-		sKeys.at(key).handled = true;
+		sKeys[key].second[i] = false;
 	}
-	catch (std::out_of_range& e)
-	{ }
 }
 
-void Input::Handled(MouseButton mb)
+void Input::Handled(MouseButton mb, Input::Layer layer)
 {
-	sButtons[mb].second = true;
+	for (int i = layer+1; i < Input::LAYER_COUNT; i++)
+	{
+		sButtons[mb].second[i] = false;
+	}
 }
 
 void Input::SetKeyboardMode(bool TextMode)

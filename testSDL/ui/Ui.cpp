@@ -12,9 +12,20 @@ ui::Widget::Widget(ui::Widget* parent, SDL_FRect area,
 		pBorder = parent->mBorder;
 		pArea = parent->mArea;
 		parent->mChilds.push_back(std::move(std::unique_ptr<ui::Widget>(this)));
+		if (parent->GetDepth() +1 < MAX_UI_DEPTH)
+		{
+			mDepth = parent->GetDepth() +1;
+		}
+	#ifdef _DEBUG
+		else
+		{
+			throw; 
+		}
+	#endif
 	}
 	else
 	{
+		mDepth = 0;
 		pArea = SDL_FRect(0, 0, Window::GetSize().x, Window::GetSize().y);
 		pBorder = SDL_FRect(5, 5, 5, 5);
 	}
@@ -45,10 +56,6 @@ ui::Widget::Widget(ui::Widget* parent, SDL_FRect area,
 		break;
 	default:
 		throw;
-	}
-	if (parent)
-	{
-		
 	}
 }
 
@@ -95,6 +102,11 @@ const std::string& ui::Widget::GetName() const
 const SDL_FRect& ui::Widget::GetArea() const
 {
 	return mArea;
+}
+
+int ui::Widget::GetDepth() const
+{
+	return mDepth;
 }
 
 ui::Widget* ui::Widget::SetBorder(SDL_FRect size)

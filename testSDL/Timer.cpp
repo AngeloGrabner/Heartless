@@ -14,7 +14,7 @@ Timer::~Timer()
 #ifdef TIMER_LOGGING
 	auto dt = Stop();
 	auto msg = to_string();
-	LOG(msg);
+	LOG_PUSH(msg);
 #endif 
 }
 

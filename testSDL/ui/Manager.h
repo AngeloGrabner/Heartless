@@ -5,6 +5,8 @@
 #include "InputField.h"
 #include "Slider.h"
 #include "TextBox.h"
+#include "Div.h"
+#include "Label.h"
 
 namespace ui
 {

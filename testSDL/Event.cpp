@@ -6,7 +6,7 @@ Uint32 Event::AddEvent(Event::Type Id)
 {
     auto eventType = SDL_RegisterEvents(1);
     if (eventType == (Uint32)-1)
-        throw std::exception(LOG("SDL Can't add Event Type").c_str());
+        throw std::exception(LOG_STR("SDL Can't add Event Type").c_str());
     sMap[Id] = eventType;
     return eventType;
 }
@@ -153,7 +153,7 @@ bool EventReceiver::Slider(const SDL_Event* e, std::string& name, float& value)
     IF(Event::UI_EVENT, 3)
     {
         name = *(std::string*)(e->user.data1);
-        value = *(float*)(e->user.type);
+        value = *(float*)(e->user.data2);
         return true;
     }
     return false;

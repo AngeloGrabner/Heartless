@@ -44,7 +44,7 @@ ui::Slider* ui::Slider::SetValue(float normalized)
 ui::Slider* ui::Slider::SetSnappiness(bool snap, int steps)
 {
 	mSnap = snap;
-	mSnapSteps = steps;
+	mSnapSteps = steps -1 ;
 	return this;
 }
 
@@ -68,13 +68,13 @@ void ui::Slider::Update()
 		}
 
 	}
-	if (contain(mSliderArea,Input::GetMousePos()) && Input::GetMouse(Input::LMB).Down())
+	if (contain(mSliderArea,Input::GetMousePos()) && Input::GetMouse(Input::LMB, Input::UI).Down())
 	{
-		std::cout << "slider\n";
-		Input::Handled(Input::LMB);
+		DB_OUT((int)Input::INTERN);
+		Input::Handled(Input::LMB, LAYER_UI);
 		mHeld = true;
 	}
-	else if (mHeld && Input::GetMouse(Input::LMB).Up())
+	else if (mHeld && Input::GetMouse(Input::LMB, LAYER_UI).Up())
 	{
 		if (mVert)
 		{
@@ -97,7 +97,7 @@ void ui::Slider::Update()
 				temp = std::round(temp);
 				temp /= (float)mSnapSteps;
 				mValue = temp;
-				mSliderArea.y = lerp(mArea.x, mArea.x + mArea.w - mSliderArea.w, mValue);
+				mSliderArea.x = lerp(mArea.x, mArea.x + mArea.w - mSliderArea.w, mValue);
 			}
 		}
 		mHeld = false;
@@ -112,9 +112,9 @@ void ui::Slider::Draw()
 	auto tex = TextureManager::Get(mTexID);
 	Renderer::SetColor(WHITE);
 	if (mVert)
-		Renderer::DrawLine(SDL_FPoint{mSliderArea.x + mSliderArea.w/2,mArea.y}, SDL_FPoint{ mSliderArea.x + mSliderArea.w / 2,mArea.y +mArea.h});
+		Renderer::DrawLine(SDL_FPoint{mSliderArea.x + mSliderArea.w/2,mArea.y + 5}, SDL_FPoint{ mSliderArea.x + mSliderArea.w / 2,mArea.y +mArea.h - 10});
 	else
-		Renderer::DrawLine(SDL_FPoint{ mArea.x, mSliderArea.y + mSliderArea.h / 2 }, SDL_FPoint{mArea.x + mArea.w, mSliderArea.y + mSliderArea.h / 2});
+		Renderer::DrawLine(SDL_FPoint{ mArea.x + 5, mSliderArea.y + mSliderArea.h / 2 }, SDL_FPoint{mArea.x + mArea.w - 10, mSliderArea.y + mSliderArea.h / 2});
 	if (mHeld)
 		tex.SetTint(mTint);
 	Renderer::DrawTexture(tex, mSliderArea);

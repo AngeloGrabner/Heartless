@@ -28,9 +28,9 @@ void ui::CheckBox::Update()
 		return;
 	Widget::Update();
 	if (contain(mArea, Input::GetMousePos()) && 
-		Input::GetMouse(Input::LMB).Down())
+		Input::GetMouse(Input::LMB, LAYER_UI).Down())
 	{
-		Input::Handled(Input::LMB);
+		Input::Handled(Input::LMB, LAYER_UI);
 		mChecked = !mChecked;
 		EventBuilder::CheckBox(mName, mChecked);
 	}

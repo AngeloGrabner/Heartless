@@ -4,7 +4,7 @@
 namespace ui
 {
 	// Slider event Values: top left is 0, bottom right is 1
-	class Slider : public Widget
+	class Slider final : public Widget
 	{
 	protected:
 		SDL_FRect mSliderArea = { 0,0,0,0 };
