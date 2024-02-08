@@ -34,7 +34,7 @@ void EventBuilder::Button(const std::string& name)
     DO_EVENT(Event::UI_EVENT);
     e.user.code = 0;
     e.user.data1 = new std::string(name);
-    SDL_PushEvent(&e);
+    PUSH;
 }
 
 void EventBuilder::CheckBox(const std::string& name, bool checked)
@@ -64,45 +64,15 @@ void EventBuilder::Slider(const std::string& name, float val)
     PUSH;
 }
 
-void EventBuilder::CameraTargetRect(SDL_FRect rect)
+void EventBuilder::Select(const std::string& name, const std::string& selected)
 {
-    DO_EVENT(Event::CAMERA_EVENT);
-    e.user.code = 0;
-    e.user.data1 = new SDL_FRect(rect);
-    PUSH;
-}
-
-void EventBuilder::CameraAbsPos(SDL_FPoint pos)
-{
-    DO_EVENT(Event::CAMERA_EVENT);
-    e.user.code = 1;
-    e.user.data1 = new SDL_FPoint(pos);
-    PUSH;
-}
-
-void EventBuilder::CameraRelPos(SDL_FPoint pos)
-{
-    DO_EVENT(Event::CAMERA_EVENT);
-    e.user.code = 2;
-    e.user.data1 = new SDL_FPoint(pos);
-    PUSH;
-}
-
-void EventBuilder::CameraScaleAbs(SDL_FPoint scale)
-{
-    DO_EVENT(Event::CAMERA_EVENT);
-    e.user.code = 3;
-    e.user.data1 = new SDL_FPoint(scale);
-    PUSH;
-}
-
-void EventBuilder::CameraScaleRel(SDL_FPoint scale)
-{
-    DO_EVENT(Event::CAMERA_EVENT);
+    DO_EVENT(Event::UI_EVENT);
     e.user.code = 4;
-    e.user.data1 = new SDL_FPoint(scale);
+    e.user.data1 = new std::string(name);
+    e.user.data2 = new std::string(selected);
     PUSH;
 }
+
 
 void EventBuilder::PlayerDied(size_t id)
 {
@@ -159,57 +129,16 @@ bool EventReceiver::Slider(const SDL_Event* e, std::string& name, float& value)
     return false;
 }
 
-bool EventReceiver::CameraTargetRect(const SDL_Event* e,SDL_FRect& rect)
+bool EventReceiver::Select(const SDL_Event* e, std::string& name, std::string& selected)
 {
-    IF(Event::CAMERA_EVENT, 0)
+    IF(Event::UI_EVENT, 4)
     {
-        rect = *(SDL_FRect*)e->user.data1;
+        name = *(std::string*)(e->user.data1);
+        selected =  *(std::string*)(e->user.data2);
         return true;
     }
     return false;
 }
-
-bool EventReceiver::CameraAbsPos(const SDL_Event* e,SDL_FPoint& pos)
-{
-    IF(Event::CAMERA_EVENT, 1)
-    {
-        pos = *(SDL_FPoint*)e->user.data1;
-        return true;
-    }
-    return false;
-}
-
-bool EventReceiver::CameraRelPos(const SDL_Event* e,SDL_FPoint& pos)
-{
-    IF(Event::CAMERA_EVENT, 2)
-    {
-        pos = *(SDL_FPoint*)e->user.data1;
-        return true;
-    }
-    return false;
-}
-
-bool EventReceiver::CameraScaleAbs(const SDL_Event* e,SDL_FPoint& scale)
-{
-    IF(Event::CAMERA_EVENT, 3)
-    {
-        auto s = (SDL_FPoint*)e->user.data1;
-        scale = *s;
-        return true;
-    }
-    return false;
-}
-
-bool EventReceiver::CameraScaleRel(const SDL_Event* e,SDL_FPoint& scale)
-{
-    IF(Event::CAMERA_EVENT, 4)
-    {
-        scale = *(SDL_FPoint*)e->user.data1;
-        return true;
-    }
-    return false;
-}
-
 
 
 
@@ -239,18 +168,13 @@ void UserEventDeallocator(SDL_Event* e)
         delete (float*)e->user.data2;
         flag = true;
     }
-    ELIF(Event::CAMERA_EVENT, 0)
+    ELIF(Event::UI_EVENT, 4)
     {
-        delete (SDL_FRect*)e->user.data1; // crash
+        delete (std::string*)(e->user.data1);
+        delete (std::string*)(e->user.data2);
         flag = true;
     }
-    else if (e->type == Event::GetEventType(Event::CAMERA_EVENT) && 
-        (e->user.code == 1 || e->user.code == 2 ||
-         e->user.code == 3 || e->user.code == 4))
-    {
-        delete (SDL_FPoint*)e->user.data1;
-        flag = true;
-    }
+
 
 
 #if _DEBUG

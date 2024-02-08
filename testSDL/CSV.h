@@ -16,7 +16,6 @@ public:
 	CSV(CSV&&) = delete;
 	CSV& operator=(const CSV&) = delete;
 	CSV& operator=(CSV&&) = delete;
-	~CSV();
 	void Load(const std::string& path);
 	//void Safe() {}
 	const std::vector<std::string>& GetRow(size_t index);

@@ -1,5 +1,6 @@
 #include "TextureManager.h"
 #include "Renderer.h"
+#include "Utility.h"
 
 std::vector<Texture> TextureManager::sCache;
 std::vector<TextureManager::InternBundle> TextureManager::sData;
@@ -9,14 +10,28 @@ void TextureManager::Init(const std::string& pathToCSV)
 	CSV csv(pathToCSV);
 	//std::cout << csv.GetCell(csv.GetColumnCount(csv.GetRowCount() - 1) - 1, csv.GetRowCount() - 1);
 	auto rows = csv.GetRowCount();
+	InternBundle ib;
 	for (int i = 0; i < rows; i++)
 	{
-		auto row = csv.GetRow(i);
-		InternBundle ib;
-		ib.id = std::stoi(row[0]);
-		ib.path = row[1];
-		ib.rect = { stoi(row[2]),stoi(row[3]),stoi(row[4]),stoi(row[5]) };
-		sData.push_back(ib);
+		try
+		{
+			ib.Clear();
+			auto row = csv.GetRow(i);
+			
+			ib.id = std::stoi(row[0]);
+			if (csv.GetColumnCount(i) <= 2)
+			{
+				sData.push_back(ib);
+				continue;
+			}
+			ib.path = row[1];
+			ib.rect = { stoi(row[2]),stoi(row[3]),stoi(row[4]),stoi(row[5]) };
+			sData.push_back(ib);
+		}
+		catch (std::exception& e)
+		{
+			LOG_PUSH(e.what());
+		}
 	}
 	std::sort(sData.begin(), sData.end(), [](InternBundle a, InternBundle b) -> bool {return a.id < b.id; });
 }
@@ -32,6 +47,10 @@ Texture TextureManager::Get(int id)
 	}
 	else
 	{
+#if _DEBUG
+		if (sData[id].path.empty())
+			throw;
+#endif
 		sCache.push_back(LoadBmp(sData[id].path));
 		for (int i = 0; i < sData.size(); i++)
 		{

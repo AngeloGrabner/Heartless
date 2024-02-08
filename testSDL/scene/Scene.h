@@ -35,7 +35,7 @@ public:
 	void Handle(const SDL_Event* e);
 	void Update(Scene* scene);
 	void ClearSelection();
-	void DoCamDrag();
+	void DoCamDrag(Scene* scene);
 	void DoSelceting(Scene* scene);
 	void Draw(Scene* scene);
 };
@@ -89,6 +89,7 @@ public:
 	bool InsertEntity(std::shared_ptr<Entity> e);
 
 	static const Scene* Get();
+	static Scene* GetMut();
 	static void Set(Scene* instance);
 private:
 	void InternHandle(const SDL_Event* e);

@@ -7,17 +7,20 @@
 
 Scene* Scene::sScene = nullptr;	
 
+#define TILE_SIZE 16
+
 Scene::Scene(SDL_Point WorldSize)
 	: mWorldSize(WorldSize)
 {
+	mCam = Camera(SDL_FPoint{ (float)WorldSize.x * TILE_SIZE,(float)WorldSize.y * TILE_SIZE });
 	mTM = Tilemap(WorldSize.x, WorldSize.y, { 16,16 });
 	for (int y  =0; y < WorldSize.y; y++)
 		for (int x = 0; x < WorldSize.x; x++)
 		{
 			if (x == 0 || y == 0 || (x == 2 && y == 2))
-				mTM.Set(x, y, std::make_shared<Tile>(9, Tile::TOP_ONTOP, 10, true));
+				mTM.Set(x, y, std::make_shared<Tile>(13*5+11, Tile::NO_TOP, -1, true));
 			else 
-				mTM.Set(x, y, std::make_shared<Tile>(7));
+				mTM.Set(x, y, std::make_shared<Tile>(11)); // hier
 		}
 	mDQT = std::make_shared<DQTE>(SDL_FRect{0.0f,0.0f,(float)mWorldSize.x,(float)mWorldSize.y},8);
 }
@@ -46,12 +49,12 @@ Scene& Scene::operator=(Scene&& other) noexcept
 
 void Scene::Handle(const SDL_Event* e)
 {
+	mCam.Handle(e);
 	if (e->type >= SDL_USEREVENT)
 	{
 		InternHandle(e);
 		if (mEditing)
 			mEditor.Handle(e);
-		mCam.Handle(e);
 		auto area = mCam.GetRect();
 		mTM.Handle(e, area);
 		auto ent = mDQT->Search(area);
@@ -227,6 +230,11 @@ const Scene* Scene::Get()
 	return sScene;
 }
 
+Scene* Scene::GetMut()
+{
+	return sScene;
+}
+
 void Scene::Set(Scene* instance)
 {
 	sScene = instance;
@@ -253,6 +261,8 @@ void Editor::Handle(const SDL_Event* e)
 {
 	std::string name;
 	float sliderVal;
+	std::string selectVal;
+	bool checkBoxVal;
 	if (EventReceiver::Slider(e, name, sliderVal))
 	{
 		if (name == "editorLayerSlider")
@@ -277,11 +287,136 @@ void Editor::Handle(const SDL_Event* e)
 #endif // _DEBUG
 		}
 	}
+	else if (EventReceiver::Select(e,name,selectVal))
+	{
+		static int row = 0, colum = 0;
+		if (name == "editorTileTextureSelect")
+		{
+			if (selectVal == "gras")
+			{
+				row = 0;
+			}
+			else if (selectVal == "sand")
+			{
+				row = 1;
+			}
+			else if (selectVal == "dirt")
+			{
+				row =2;
+			}
+			else if (selectVal == "snow")
+			{
+				row = 3;
+			}
+			else if (selectVal == "stone brick w")
+			{
+				row = 4;
+			}
+			else if (selectVal == "dirt w")
+			{
+				row = 5;
+			}
+			else if (selectVal == "stone w")
+			{
+				row = 6;
+			}
+#ifdef _DEBUG
+			else
+			{
+				throw std::exception("unknown Texture");
+			}
+#endif // _DEBUG
+
+			
+		}
+		else if (name == "editorTileSubTextureSelect")
+		{
+			if (selectVal == "full")
+			{
+				colum = 0;
+			}
+			else if (selectVal == "left")
+			{
+				colum = 1;
+			}
+			else if (selectVal == "right")
+			{
+				colum = 2;
+			}
+			else if (selectVal == "bottom")
+			{
+				colum = 3;
+			}
+			else if (selectVal == "top")
+			{
+				colum = 4;
+			}
+			else if (selectVal == "inner t l")
+			{
+				colum = 5;
+			}
+			else if (selectVal == "inner t r")
+			{
+				colum = 6;
+			}
+			else if (selectVal == "inner b l")
+			{
+				colum = 7;
+			}
+			else if (selectVal == "inner b r")
+			{
+				colum = 8;
+			}
+			else if (selectVal == "outer t l")
+			{
+				colum = 9;
+			}
+			else if (selectVal == "outer t r")
+			{
+				colum = 10;
+			}
+			else if (selectVal == "outer b l")
+			{
+				colum = 11;
+			}
+			else if (selectVal == "outer b r")
+			{
+				colum = 12;
+			}
+#ifdef _DEBUG
+			else
+			{
+				throw std::exception("unknown Texture");
+			}
+#endif // _DEBUG
+		}
+		constexpr int textureTypes = 13, offset = 11; // see data.csv for details
+		if (mLayer == TILE_BOTTOM)
+			for (auto ptr : mSelectedTiles)
+			{
+				ptr->SetBottomTexture(row * textureTypes + colum+offset);
+			}
+		else if (mLayer == TILE_TOP)
+			for (auto ptr : mSelectedTiles)
+			{
+				ptr->SetTopTexture(row * textureTypes + colum);
+			}
+	}
+	else if (EventReceiver::CheckBox(e, name, checkBoxVal))
+	{
+		if (name == "editorTileSolidCheckbox")
+		{
+			for (auto ptr : mSelectedTiles)
+			{
+				ptr->SetSolid(checkBoxVal);
+			}
+		}
+	}
 }
 
 void Editor::Update(Scene* scene)
 {
-	DoCamDrag();
+	DoCamDrag(scene);
 	DoSelceting(scene);
 }
 
@@ -293,22 +428,22 @@ void Editor::ClearSelection()
 	mSelectedEntities.clear();
 }
 
-void Editor::DoCamDrag()
+void Editor::DoCamDrag(Scene* scene)
 {
 	if (Input::GetMouse(Input::LMB,Input::EDITOR).Hold())
 	{
 		//DB_OUT("editorDrag");
 		auto pos = Input::GetRelativeMousePos();
 		auto scale = Scene::Get()->GetCamera().GetScale();
-		EventBuilder::CameraRelPos(SDL_FPoint{ -(pos.x / scale.x),-(pos.y / scale.y) });
+		scene->GetCamera().SetPosRel(SDL_FPoint{ -(pos.x / scale.x),-(pos.y / scale.y) });
 	}
 	if (Input::GetWheel().y < 0)
 	{
-		EventBuilder::CameraScaleRel(SDL_FPoint{ 0.8,0.8 });
+		scene->GetCamera().SetScaleRel(SDL_FPoint{ 0.8,0.8 });
 	}
 	else if (Input::GetWheel().y > 0)
 	{
-		EventBuilder::CameraScaleRel(SDL_FPoint{ 1.2,1.2 });
+		scene->GetCamera().SetScaleRel(SDL_FPoint{ 1.2,1.2 });
 	}
 }
 

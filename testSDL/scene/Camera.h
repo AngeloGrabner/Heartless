@@ -7,8 +7,8 @@ class Camera
 {
 	SDL_FPoint mPos = { 0,0 };
 	SDL_FPoint mScale = { 1.0f,1.0f };
-	SDL_FPoint mWorldSize = { 0,0 };
-	SDL_FRect mTarget = { FLT_MIN,FLT_MIN,0,0 };
+	SDL_FPoint mWorldSize = { -1,-1 };
+	SDL_Point mScreenSize = { -1, -1 };
 	bool mClap = true;
 	bool mScaleToMid = true; // not implemented, see //hier in .cpp 
 public:
@@ -24,11 +24,22 @@ public:
 	void Handle(const SDL_Event* e);
 	void Update();
 	void Clamp(bool Do = true);
+
 	const SDL_FPoint& GetPos() const;
 	const SDL_FPoint& GetScale() const;
+	SDL_FRect GetRect();
+
 	void SetPos(SDL_FPoint pos);
+	//pos += dPos
+	void SetPosRel(SDL_FPoint dPos);
 	void SetScale(SDL_FPoint scale);
-	const SDL_FRect GetRect() const;
+	//scale *= dScale
+	void SetScaleRel(SDL_FPoint dScale);
+	void SetTarget(SDL_FRect target);
+
+private:
+	void clamp();
+	
 };
 
 template<class Archive>

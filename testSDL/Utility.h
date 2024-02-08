@@ -88,3 +88,9 @@ inline std::string to_string(Rect r)
 {
 	return ("x: " + std::to_string(r.x) + " y: " + std::to_string(r.y) + " w: " + std::to_string(r.w) + " h: " + std::to_string(r.h));
 }
+
+template<RECT RectIn, RECT RectOut>
+inline RectOut cast(RectIn rect)
+{
+	return RectOut(rect.x, rect.y, rect.w, rect.h);
+}

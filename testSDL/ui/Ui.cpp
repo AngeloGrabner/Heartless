@@ -104,6 +104,11 @@ const SDL_FRect& ui::Widget::GetArea() const
 	return mArea;
 }
 
+SDL_FRect ui::Widget::GetInnerArea() const
+{
+	return SDL_FRect(mArea.x + mBorder.x, mArea.y + mBorder.y, mArea.w - mBorder.w*2, mArea.h - mBorder.h*2);
+}
+
 int ui::Widget::GetDepth() const
 {
 	return mDepth;
@@ -147,7 +152,7 @@ void ui::Widget::DebugDraw()
 	Renderer::SetColor(RED);
 	Renderer::DrawRect(mArea);
 	Renderer::SetColor(GREEN);
-	Renderer::DrawRect(SDL_FRect(mArea.x+mBorder.x,mArea.y+mBorder.y,mArea.w-mBorder.w,mArea.h-mBorder.h));
+	Renderer::DrawRect(GetInnerArea());
 	DebugDrawChildrin();
 }
 

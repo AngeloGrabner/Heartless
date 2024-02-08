@@ -90,12 +90,7 @@ void ui::InputField::Draw()
 	}
 	
 	const float offset = 2;
-	SDL_Rect textArea = { 
-		(int)(mArea.x + offset * yScale),
-		(int)(mArea.y + offset * yScale),
-		(int)(mArea.w - 2 * offset * yScale),
-		(int)(mArea.h - 2 * offset * yScale)
-	};
+	SDL_Rect textArea = cast<SDL_FRect,SDL_Rect>(GetInnerArea());
 	auto fonstCache = FontWriter::GetFont();
 	if (mFontId != -1)
 	{

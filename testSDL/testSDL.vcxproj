@@ -173,6 +173,7 @@
     <ClCompile Include="ui\InputField.cpp" />
     <ClCompile Include="ui\Label.cpp" />
     <ClCompile Include="ui\Manager.cpp" />
+    <ClCompile Include="ui\Select.cpp" />
     <ClCompile Include="ui\Slider.cpp" />
     <ClCompile Include="ui\TextBox.cpp" />
     <ClCompile Include="ui\Ui.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="ui\InputField.h" />
     <ClInclude Include="ui\Label.h" />
     <ClInclude Include="ui\Manager.h" />
+    <ClInclude Include="ui\Select.h" />
     <ClInclude Include="ui\Slider.h" />
     <ClInclude Include="ui\TextBox.h" />
     <ClInclude Include="ui\Ui.h" />

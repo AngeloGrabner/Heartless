@@ -49,7 +49,7 @@ public:
 
 			std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8);
 			p->AddActionController(std::make_shared<PlayerController>());
-			p->SetStats(StatPack(1, 1, 100.0f));
+			p->SetStats(StatPack(1, 1, 30.0f));
 			if (mScene.InsertEntity(p))
 			{
 				DB_OUT("inserted");

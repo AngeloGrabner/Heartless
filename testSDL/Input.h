@@ -89,6 +89,7 @@ public:
 		Key(KeyState keystate, SDL_Keymod keymod) : ks(keystate), km(keymod) {}
 
 		bool Up() const { return ks == UP; }
+		bool DownOrHold() const { return ks == DOWN || ks == HOLD; }
 		bool Down() const { return ks == DOWN; }
 		bool Hold() const { return ks == HOLD; }
 		bool Shift() const { return (km & KMOD_SHIFT) == KMOD_LSHIFT || (km & KMOD_SHIFT) == KMOD_RSHIFT; }
@@ -106,5 +107,6 @@ public:
 		bool Down() const { return mouseState == DOWN; }
 		bool Up() const { return mouseState == UP; }
 		bool Hold() const { return mouseState == HOLD; }
+		bool DownOrHold() const { return mouseState == DOWN || mouseState == HOLD;}
 	};
 };

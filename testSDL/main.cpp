@@ -6,6 +6,12 @@
 
 int main(int argc, char** arcv)
 {
+#ifdef _DEBUG
+	App app;
+	if (app.Init())
+		app.Run();
+	return 0;
+#else
 	try
 	{
 		App app;
@@ -22,5 +28,8 @@ int main(int argc, char** arcv)
 		}
 		return -1;
 	}
+#endif // !_DEBUG
+
+
 	
 }

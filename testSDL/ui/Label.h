@@ -3,6 +3,7 @@
 
 namespace ui
 {
+	// displayed text size is based on mArea.h 
 	class Label : public Widget
 	{
 	protected:

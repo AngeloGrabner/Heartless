@@ -68,6 +68,8 @@ void ui::Manager::Activate(const std::string& name, bool active)
 	}
 }
 
+//warning the following code is CURSED
+//btw it might look like a mem leak, but it isnt, see ui::widget for details
 void ui::Manager::Init()
 {
 	SDL_Point winSize = Window::GetSize();
@@ -90,21 +92,75 @@ void ui::Manager::Init()
 		
 		mWidgets.push_back(std::unique_ptr<ui::Widget>(editorFrame));
 		
-		Widget* layerDiv = new ui::Div(editorFrame,SDL_FRect(0, 5, editorFrame->GetArea().w, editorFrame->GetArea().h / 15.0f),WIDGET_CENTER,WIDGET_TOP);
+		Widget* layerDiv = new ui::Div(editorFrame,SDL_FRect(0, 5, editorFrame->GetInnerArea().w, editorFrame->GetInnerArea().h / 15.0f),WIDGET_CENTER,WIDGET_TOP);
 		
-		{
+		{ //slider div
 
-			SDL_FRect sliderArea = SDL_FRect(0, 0,layerDiv->GetArea().w/2.0f, layerDiv->GetArea().h);
+			SDL_FRect sliderArea = SDL_FRect(0, 0,layerDiv->GetInnerArea().w/2.0f, layerDiv->GetInnerArea().h);
 
-			ui::Widget* layerSlider =
-				(new ui::Slider(layerDiv, sliderArea, "editorLayerSlider", false, WIDGET_RIGHT, WIDGET_CENTER, 4, { layerDiv->GetArea().h/2.0f,layerDiv->GetArea().h-2 }))
+			(new ui::Slider(layerDiv, sliderArea, "editorLayerSlider", false, WIDGET_RIGHT, WIDGET_CENTER, 4, { layerDiv->GetInnerArea().h/2.0f,layerDiv->GetInnerArea().h-2 }))
 				->SetSnappiness(true, 3);
 
-			SDL_FRect textboxArea = SDL_FRect(0, 0, layerDiv->GetArea().w / 2.0f, layerDiv->GetArea().h);
+			SDL_FRect textboxArea = SDL_FRect(0, 0, layerDiv->GetInnerArea().w / 2.0f, layerDiv->GetInnerArea().h);
 
-			ui::Widget* layerSliderLable =
-				(new ui::Label(layerDiv, textboxArea, "editorLayerLable", WIDGET_LEFT, WIDGET_CENTER))
+			(new ui::Label(layerDiv, textboxArea, "editorLayerLable", WIDGET_LEFT, WIDGET_CENTER))
 				->SetText("Layer");
+		}
+
+		Widget* tileDiv = (new ui::Div(editorFrame, SDL_FRect(0, editorFrame->GetInnerArea().h / 15.0f, editorFrame->GetInnerArea().w, editorFrame->GetInnerArea().h - editorFrame->GetInnerArea().h / 15.0f)))
+			->SetName("editorTileDiv")
+			->SetBorder({ 5,5,5,5 });
+
+		{ // tile div
+			SDL_FRect selectTextureArea = SDL_FRect(0, 0, tileDiv->GetInnerArea().w / 2.0f, tileDiv->GetInnerArea().h / 15.0f);
+		
+			(new ui::Select(tileDiv, selectTextureArea, "editorTileTextureSelect", -1))
+				->AddOption("gras")
+				->AddOption("sand")
+				->AddOption("dirt")
+				->AddOption("snow")
+				->AddOption("stone brick w")
+				->AddOption("dirt w")
+				->AddOption("stone w")
+
+				->SetBorder({ 2,2,2,2 });
+
+			(new ui::Select(tileDiv, selectTextureArea, "editorTileSubTextureSelect", -1, WIDGET_RIGHT))
+				->AddOption("full")
+				->AddOption("left")
+				->AddOption("right")
+				->AddOption("bottom")
+				->AddOption("top")
+				->AddOption("inner t l")
+				->AddOption("inner t r")
+				->AddOption("inner b l")
+				->AddOption("inner b r")
+				->AddOption("outer t l")
+				->AddOption("outer t r")
+				->AddOption("outer b l")
+				->AddOption("outer b r")
+				
+				->SetBorder({ 2,2,2,2 });
+
+			{
+				SDL_FRect checkboxArea = SDL_FRect(0, tileDiv->GetInnerArea().h / 14.0f, tileDiv->GetInnerArea().w/3.0f,20 );
+
+				ui::Widget* solidDiv = new ui::Div(tileDiv, checkboxArea);
+
+				(new ui::Label(solidDiv, SDL_FRect(0,0,100,20), "editorTileSolidLabel"))
+					->SetAlignment(WIDGET_LEFT)
+					->SetText("Solid");
+
+				(new ui::CheckBox(solidDiv, SDL_FRect(0, 0,20,20), "editorTileSolidCheckbox", WIDGET_RIGHT))
+					->SetTextures(4, 5);
+			
+			}
+
+			{
+				SDL_FRect tileTopArea = SDL_FRect(0, tileDiv->GetInnerArea().h / 14.0f * 2, tileDiv->GetInnerArea().w / 3.0f, tileDiv->GetInnerArea().h / 15.0f);
+
+				(new ui::Select(tileDiv,tileTopArea,"editorTileTopSelect",-1))
+			}
 		}
 	}
 }

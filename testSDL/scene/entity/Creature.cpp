@@ -28,7 +28,8 @@ bool Creature::Update()
 	}
 	auto dt = MStoF(Timer::GetGlobalDT());
 	//todo: item useage
-	
+
+	//hier
 
 	//temp
 	mHitBox.x += mDir.x * mStats.spd * dt;

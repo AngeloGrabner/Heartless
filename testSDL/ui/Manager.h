@@ -7,6 +7,7 @@
 #include "TextBox.h"
 #include "Div.h"
 #include "Label.h"
+#include "Select.h"
 
 namespace ui
 {

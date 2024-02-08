@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "../Scene.h"
 #include "../../Event.h"
 
 Player::Player(SDL_FRect hitbox, int textureId, SDL_FRect drawBoxOffset)
@@ -18,6 +19,6 @@ bool Player::Update()
         EventBuilder::PlayerDied(mId);
         
     }
-    EventBuilder::CameraTargetRect(mHitBox);
+    Scene::GetMut()->GetCamera().SetTarget(mHitBox);
     return true;
 }

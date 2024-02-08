@@ -9,7 +9,7 @@ using Millis = Milliseconds;
 
 constexpr float MStoF(Milliseconds ms)
 {
-	return ms / 1000.0f;
+	return float(ms / 1000.0);
 }
 
 class Timer

@@ -75,6 +75,11 @@ void Tile::Handle(const SDL_Event* e)
 
 }
 
+void Tile::SetSolid(bool solid)
+{
+    mIsSolid = solid;
+}
+
 void Tile::SetTopTexture(int textureId)
 {
     mTexIdTop = textureId;

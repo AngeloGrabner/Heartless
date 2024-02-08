@@ -22,21 +22,24 @@ void ui::Label::Draw()
 		textWidth += FontWriter::GetSize(mText[i]).x;
 	}
 	textWidth *= mTextScale.x;
+
+	auto innerArea = GetInnerArea();
+
 #ifdef _DEBUG
-	if (textWidth > mArea.w)
+	if (textWidth > innerArea.w)
 	{
-		throw std::exception(("at least " + std::to_string(textWidth - mArea.w) + " pixels needed").c_str());
+		throw std::exception(("at least " + std::to_string(textWidth - innerArea.w) + " pixels needed").c_str());
 	}
 #endif // _DEBUG
 
-	SDL_Rect area = SDL_Rect((int)mArea.x, (int)mArea.y, (int)mArea.w, (int)mArea.h);;
+	SDL_Rect area = cast<SDL_FRect, SDL_Rect>(innerArea);
 	if (mAlignment == WIDGET_CENTER)
 	{
-		area.x += mArea.w / 2 - textWidth / 2;
+		area.x += innerArea.w / 2 - textWidth / 2;
 	}
 	else if (mAlignment == WIDGET_RIGHT)
 	{
-		area.x += (mArea.w - textWidth);
+		area.x += (innerArea.w - textWidth);
 	}
 
 	FontWriter::DrawText(area,mText,mTextScale,mTextColor,true);
@@ -59,7 +62,7 @@ ui::Label* ui::Label::SetFont(int fontId)
 
 	FontWriter::SetFont(mFontId);
 
-	mTextScale.y = mArea.y / FontWriter::GetSize().y;
+	mTextScale.y = GetInnerArea().y / FontWriter::GetSize().y;
 	mTextScale.x = mTextScale.y;
 
 	FontWriter::SetFont(temp);

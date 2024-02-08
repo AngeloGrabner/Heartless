@@ -4,11 +4,13 @@
 #include <stdint.h>
 #include <memory>
 
+//todo: add border offsetes to label, select etc
 
 // if you cahnge this value see Input.h an change Input::layer::UI_X
+// last value not included therefore 0.. 15
 #define MAX_UI_DEPTH 16 
 
-#define LAYER_UI (Input::Layer)(Input::UI - mDepth -1)
+#define LAYER_UI (Input::Layer)(Input::UI - mDepth)
 
 namespace ui
 {
@@ -34,7 +36,12 @@ namespace ui
 		bool mChildrinDebugDrawFlag = false;
 	public:
 		Widget() = delete;
-		Widget(Widget* parent, SDL_FRect area, const std::string& name, WidgetPostion x = WIDGET_LEFT, WidgetPostion y = WIDGET_TOP); // hier
+		Widget(
+			Widget* parent, 
+			SDL_FRect area,
+			const std::string& name, 
+			WidgetPostion x = WIDGET_LEFT,
+			WidgetPostion y = WIDGET_TOP);
 		Widget(const Widget& other) = delete;
 		Widget(Widget&& other) noexcept;
 		Widget& operator=(const Widget & other) = delete;
@@ -42,7 +49,9 @@ namespace ui
 
 		void Move(int xOffset, int yOffset);
 		const std::string& GetName() const;
-		const SDL_FRect& GetArea() const;
+		// you maight mean GetInnerArea()
+		const SDL_FRect& GetArea() const; 
+		SDL_FRect GetInnerArea() const;
 		int GetDepth() const;
 
 

@@ -20,10 +20,6 @@ CSV::CSV(const std::string& path, char seperator)
 		}
 	}
 }
-CSV::~CSV()
-{
-	
-}
 void CSV::Load(const std::string& path)
 {
 	mData.clear();
