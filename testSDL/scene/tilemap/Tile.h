@@ -41,6 +41,7 @@ public:
 	template<class Archive>
 	void load(Archive& ar);
 
+	void SetTop(TopStatus status);
 	void SetSolid(bool solid);
 	void SetTopTexture(int textureId);
 	void SetBottomTexture(int textureId);

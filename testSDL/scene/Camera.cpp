@@ -79,6 +79,11 @@ void Camera::SetTarget(SDL_FRect target)
 	clamp();
 }
 
+void Camera::SetWorldSize(SDL_FPoint sizeInWorldSpace)
+{
+	mWorldSize = sizeInWorldSpace;
+}
+
 void Camera::clamp()
 {
 	if (mClap)

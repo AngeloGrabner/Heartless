@@ -157,10 +157,16 @@ void ui::Manager::Init()
 			}
 
 			{
-				SDL_FRect tileTopArea = SDL_FRect(0, tileDiv->GetInnerArea().h / 14.0f * 2, tileDiv->GetInnerArea().w / 3.0f, tileDiv->GetInnerArea().h / 15.0f);
+				SDL_FRect tileTopArea = SDL_FRect(0, tileDiv->GetInnerArea().h / 14.0f * 2, tileDiv->GetInnerArea().w, tileDiv->GetInnerArea().h / 20.0f);
 
 				(new ui::Select(tileDiv,tileTopArea,"editorTileTopSelect",-1))
+					->AddOption("No Top")
+					->AddOption("Top")
+					->AddOption("Top on Top")
+
+					->SetBorder({ 2,2,2,2 });
 			}
+			//hier
 		}
 	}
 }

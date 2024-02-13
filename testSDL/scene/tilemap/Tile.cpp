@@ -51,8 +51,10 @@ void Tile::Draw(SDL_FRect area)
     {
         if (mTopAni.IsInited())
             tex = mTopAni.Get();
-        else
+        else if (mTexIdTop > 0)
             tex = TextureManager::Get(mTexIdTop);
+        else
+            return;
         Renderer::DrawTexture(tex, area);
     }
 }
@@ -64,8 +66,10 @@ void Tile::DrawOnTop(SDL_FRect area)
     {
         if (mTopAni.IsInited())
             tex = mTopAni.Get();
-        else
+        else if (mTexIdTop > 0)
             tex = TextureManager::Get(mTexIdTop);
+        else
+            return;
         Renderer::DrawTexture(tex, area);
     }
 }
@@ -73,6 +77,11 @@ void Tile::DrawOnTop(SDL_FRect area)
 void Tile::Handle(const SDL_Event* e)
 {
 
+}
+
+void Tile::SetTop(TopStatus status)
+{
+    mTop = status;
 }
 
 void Tile::SetSolid(bool solid)

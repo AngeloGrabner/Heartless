@@ -36,6 +36,8 @@ public:
 	//scale *= dScale
 	void SetScaleRel(SDL_FPoint dScale);
 	void SetTarget(SDL_FRect target);
+	//not in tile space
+	void SetWorldSize(SDL_FPoint sizeInWorldSpace);
 
 private:
 	void clamp();
@@ -45,11 +47,11 @@ private:
 template<class Archive>
 inline void Camera::save(Archive& ar) const
 {
-	ar(mPos, mScale, mClap, mScaleToMid);
+	ar(mPos, mScale, mClap, mScaleToMid, mWorldSize);
 }
 
 template<class Archive>
 inline void Camera::load(Archive& ar)
 {
-	ar(mPos, mScale, mClap, mScaleToMid);
+	ar(mPos, mScale, mClap, mScaleToMid, mWorldSize);
 }

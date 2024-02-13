@@ -25,7 +25,7 @@ private:
 public:
 	App()
 	{
-		SDLCHECK(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO));
+		SDLCHECK(SDL_Init(SDL_INIT_EVENTS | SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_AUDIO));
 
 		Window::Init("SDL Test", {SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,1280,720});
 		Renderer::Init(Window::Get());
@@ -40,7 +40,7 @@ public:
 	}
 	bool Init()
 	{
-		if (true)
+		if (false)
 		{	
 			mScene = Scene({ 100,100 });
 	

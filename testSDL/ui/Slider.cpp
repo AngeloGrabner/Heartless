@@ -70,7 +70,7 @@ void ui::Slider::Update()
 	}
 	if (contain(mSliderArea,Input::GetMousePos()) && Input::GetMouse(Input::LMB, Input::UI).Down())
 	{
-		DB_OUT((int)Input::INTERN);
+		//DB_OUT((int)Input::INTERN);
 		Input::Handled(Input::LMB, LAYER_UI);
 		mHeld = true;
 	}

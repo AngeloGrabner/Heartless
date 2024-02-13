@@ -290,8 +290,11 @@ void Editor::Handle(const SDL_Event* e)
 	else if (EventReceiver::Select(e,name,selectVal))
 	{
 		static int row = 0, colum = 0;
+		static Tile::TopStatus top = Tile::NO_TOP;
+		bool flag = false;
 		if (name == "editorTileTextureSelect")
 		{
+			flag = true;
 			if (selectVal == "gras")
 			{
 				row = 0;
@@ -331,6 +334,7 @@ void Editor::Handle(const SDL_Event* e)
 		}
 		else if (name == "editorTileSubTextureSelect")
 		{
+			flag = true;
 			if (selectVal == "full")
 			{
 				colum = 0;
@@ -390,17 +394,62 @@ void Editor::Handle(const SDL_Event* e)
 			}
 #endif // _DEBUG
 		}
-		constexpr int textureTypes = 13, offset = 11; // see data.csv for details
-		if (mLayer == TILE_BOTTOM)
+		else if (name == "editorTileTopSelect")
+		{
+			
+			if (selectVal == "No Top")
+			{
+				top = Tile::NO_TOP;
+			}
+			else if (selectVal == "Top")
+			{
+				top = Tile::TOP;
+			}
+			else if (selectVal == "Top on Top")
+			{
+				top = Tile::TOP_ONTOP;
+			}
+#ifdef _DEBUG
+			else
+			{
+				throw;
+			}
+#endif // _DEBUG
+
+			
 			for (auto ptr : mSelectedTiles)
 			{
-				ptr->SetBottomTexture(row * textureTypes + colum+offset);
+				ptr->SetTop(top);
 			}
-		else if (mLayer == TILE_TOP)
-			for (auto ptr : mSelectedTiles)
+		}
+		if (flag)
+		{
+			constexpr int textureTypes = 13, offset = 11; // see data.csv for details
+			if (mLayer == TILE_BOTTOM)
 			{
-				ptr->SetTopTexture(row * textureTypes + colum);
+				if (top == Tile::NO_TOP)
+				{
+					for (auto ptr : mSelectedTiles)
+					{
+						ptr->SetBottomTexture(row * textureTypes + colum + offset);
+					}
+				}
+				else if (top == Tile::TOP)
+				{
+					for (auto ptr : mSelectedTiles)
+					{
+						ptr->SetTopTexture(row* textureTypes + colum + offset);
+					}
+				}
 			}
+			else if (mLayer == TILE_TOP)
+			{
+				for (auto ptr : mSelectedTiles)
+				{
+					ptr->SetTopTexture(row * textureTypes + colum + offset);
+				}
+			}
+		}
 	}
 	else if (EventReceiver::CheckBox(e, name, checkBoxVal))
 	{
