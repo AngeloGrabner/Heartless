@@ -165,10 +165,10 @@ const std::shared_ptr<Player> Scene::GetPlayer() const
 				return mPlayer;
 			}
 		}
-#if _DEBUG
+
 		LOG_PUSH("Scene couln'd find player, therefore const GetPlayer returns nullptr");
-		throw;
-#endif
+		SDL_assert(false);
+
 		return nullptr;
 	}
 
@@ -206,10 +206,10 @@ std::shared_ptr<Player> Scene::GetPlayer()
 				return mPlayer;
 			}
 		}
-#if _DEBUG
+
 		LOG_PUSH("Scene couln'd find player, therefore GetPlayer returns nullptr");
-		throw;
-#endif
+		SDL_assert(false);
+
 		return nullptr;
 	}
 		
@@ -279,12 +279,10 @@ void Editor::Handle(const SDL_Event* e)
 			{
 				mLayer = TILE_TOP;
 			}
-#ifdef _DEBUG
 			else
 			{
-				throw;
+				SDL_assert(false);
 			}
-#endif // _DEBUG
 		}
 	}
 	else if (EventReceiver::Select(e,name,selectVal))
@@ -323,12 +321,10 @@ void Editor::Handle(const SDL_Event* e)
 			{
 				row = 6;
 			}
-#ifdef _DEBUG
 			else
 			{
-				throw std::exception("unknown Texture");
+				SDL_assert(false); //unknown Texture
 			}
-#endif // _DEBUG
 
 			
 		}
@@ -387,12 +383,10 @@ void Editor::Handle(const SDL_Event* e)
 			{
 				colum = 12;
 			}
-#ifdef _DEBUG
 			else
 			{
-				throw std::exception("unknown Texture");
+				SDL_assert(false); //unknown Texture
 			}
-#endif // _DEBUG
 		}
 		else if (name == "editorTileTopSelect")
 		{
@@ -409,12 +403,10 @@ void Editor::Handle(const SDL_Event* e)
 			{
 				top = Tile::TOP_ONTOP;
 			}
-#ifdef _DEBUG
 			else
 			{
-				throw;
+				SDL_assert(false); //unkonw tile top... type.. whatever
 			}
-#endif // _DEBUG
 
 			
 			for (auto ptr : mSelectedTiles)
@@ -572,10 +564,8 @@ void Editor::Draw(Scene* scene)
 		break;
 	case Editor::LAST_LAYER:
 	default:
-#ifdef _DEBUG
 		DB_OUT("unknown editor layer");
-		throw;
-#endif
+		SDL_assert(false);
 		break;
 	}
 	if (mSelecting || !mSelectedEntities.empty() || !mSelectedTiles.empty())

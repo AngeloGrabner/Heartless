@@ -59,10 +59,8 @@ void Animation::ResetAnimation()
 
 void Animation::SetAnimation(size_t animationId)
 {
-#if _DEBUG
-	if (animationId > mSteps.y)
-		throw;
-#endif
+	SDL_assert(animationId <= mSteps.y);
+
 	mIndex.y = animationId;
 }
 

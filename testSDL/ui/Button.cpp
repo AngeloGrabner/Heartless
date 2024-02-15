@@ -1,12 +1,13 @@
 #include "Button.h"
 
+#include "../TextureManager.h"
 #include "../Input.h"
 
 namespace ui
 {
 
 	Button::Button(Widget* parent, SDL_FRect area, const std::string& name, int textureID, WidgetPostion x, WidgetPostion y, Milliseconds cooldown)
-		: TextBox(parent,area,name,textureID,x,y), mReclickCooldown(cooldown)
+		: Label(parent,area,name,x,y),mTexId(textureID), mReclickCooldown(cooldown)
 	{
 
 	}
@@ -15,11 +16,21 @@ namespace ui
 		mReclickCooldown = ms;
 		return this;
 	}
+	Button* Button::SetTexture(int textureId)
+	{
+		mTexId = textureId;
+		return this;
+	}
+	Button* Button::SetText(const std::string& text)
+	{
+		mText = text;
+		return this;
+	}
 	void Button::Update()
 	{
 		if (!mActive)
 			return;
-		TextBox::Update();
+		Widget::Update();
 		UpdateChildrin();
 		if (mClicked)
 		{
@@ -52,9 +63,33 @@ namespace ui
 			mTextColor.a *= mClickedTint.a / 255.0f;
 		}
 
+		auto tex = TextureManager::Get(mTexId);
+
+		tex.SetTint(mBackgroundTint);
+
+		tex.rect.w /= 3;
+		SDL_FRect area = mArea;
+		float yScale = area.h / tex.rect.h;
+		{ // draw the box 
+			area.w = tex.rect.w * yScale;
+			Renderer::DrawTexture(tex, area);
+
+			tex.rect.x += tex.rect.w;
+			area.x += area.w;
+			area.w = mArea.w - area.w * 2.0f;
+			Renderer::DrawTexture(tex, area);
+
+			tex.rect.x += tex.rect.w;
+			area.w = tex.rect.w * yScale;
+			area.x = mArea.x + mArea.w - area.w;
+			Renderer::DrawTexture(tex, area);
+		}
+
+		tex.SetTint(WHITE);
+
 		bool flag = mChildrinDrawFlag;
 		mChildrinDrawFlag = true;
-		TextBox::Draw();
+		Label::Draw();
 		mTextColor = temp;
 		if (!flag)
 			mChildrinDrawFlag = false;

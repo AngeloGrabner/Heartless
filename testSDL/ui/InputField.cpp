@@ -18,6 +18,7 @@ ui::InputField* ui::InputField::SetTexture(int textureId)
 ui::InputField* ui::InputField::SetText(const std::string& defaultText)
 {
 	mText = defaultText;
+	mCursor += defaultText.size();
 	return this;
 }
 
@@ -40,9 +41,16 @@ void ui::InputField::Update()
 	}
 	if (mSelected)
 	{
+		if (Input::GetMouse(Input::LMB, LAYER_UI).Down())
+		{
+			Input::Handled(Input::LMB, LAYER_UI);
+			Input::SetKeyboardMode(false);
+			mSelected = false;
+			return;
+		}
 		auto str = Input::GetTextChunk();
 		auto nlPos = str.find_first_of('\n');
-		if (nlPos != std::string::npos)
+		if (nlPos != std::string::npos )
 		{
 			mSelected = false;
 			str = str.substr(0, nlPos);

@@ -1,23 +1,31 @@
 #include "CSV.h"
 #include <iostream>
+#include "Utility.h"
 
 CSV::CSV(const std::string& path, char seperator)
 	:mSeperator(seperator)
 {
-	SDL_memset(mBuffer, 0, CSV_BUFFER_SIZE);
-	Load(path);
-	//prevent commen user error
-	//trim first and last row is they are empty 
-	if (mData.size() > 0)
+	try
 	{
-		if (mData[0].empty() || mData[0][0].empty())
+		SDL_memset(mBuffer, 0, CSV_BUFFER_SIZE);
+		Load(path);
+		//prevent commen user error
+		//trim first and last row is they are empty 
+		if (mData.size() > 0)
 		{
-			mData.erase(mData.begin());
+			if (mData[0].empty() || mData[0][0].empty())
+			{
+				mData.erase(mData.begin());
+			}
+			if (mData[mData.size() - 1].empty() || mData[mData.size() - 1][0].empty())
+			{
+				mData.erase(std::prev(mData.end()));
+			}
 		}
-		if (mData[mData.size() - 1].empty() || mData[mData.size() - 1][0].empty())
-		{
-			mData.erase(std::prev(mData.end()));
-		}
+	}
+	catch (std::exception& e)
+	{
+		DB_OUT(e.what());
 	}
 }
 void CSV::Load(const std::string& path)

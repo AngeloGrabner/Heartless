@@ -25,12 +25,7 @@ void ui::Label::Draw()
 
 	auto innerArea = GetInnerArea();
 
-#ifdef _DEBUG
-	if (textWidth > innerArea.w)
-	{
-		throw std::exception(("at least " + std::to_string(textWidth - innerArea.w) + " pixels needed").c_str());
-	}
-#endif // _DEBUG
+	SDL_assert(textWidth <= innerArea.w); // not enought space -> textWidth - innerArea.w needed
 
 	SDL_Rect area = cast<SDL_FRect, SDL_Rect>(innerArea);
 	if (mAlignment == WIDGET_CENTER)

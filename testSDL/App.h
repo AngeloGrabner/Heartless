@@ -2,7 +2,7 @@
 #include <thread>
 #include "Renderer.h"
 #include "Window.h"
-
+#include "Sound.h"
 #include "scene/Scene.h"
 #include "ui/Manager.h"
 
@@ -29,12 +29,12 @@ public:
 
 		Window::Init("SDL Test", {SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,1280,720});
 		Renderer::Init(Window::Get());
-		TextureManager::Init("../res/data.csv");
+		TextureManager::Init("../res/textures.csv");
+		Sound::Init("../res/sounds.csv");
 		ui::FontWriter::Init("../res/font.csv");
 		Input::Init();
 		Event::Init();
 		mUim.Init();
-
 		Renderer::SetScreenMode(false);
 		Renderer::SetVSync(Renderer::VSYNC_ENABLE);
 	}
@@ -71,10 +71,12 @@ public:
 			}
 		}
 		Scene::Set(&mScene);
+		Sound::WaitForLoad();
 		return true;
 	}
 	void Run() // player aint showing tip: use ceature class
 	{
+		
 		while (mRunning)
 		{
 			mTimer.Start();
@@ -127,6 +129,7 @@ public:
 			std::cout << e.what();
 			LOG_PUSH(e.what());
 		}
+		LOG_PRINT;
 		Renderer::Free();
 		Window::Free();
 		SDL_Quit();

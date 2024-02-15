@@ -5,6 +5,8 @@
 
 #define MAX_LIGHT_LEVEL (uint8_t)(16)
 
+// make the tile map reuse duplicate tiles map with ptr the the unique tiles 
+// see flightweight pattern https://www.youtube.com/watch?v=hQE8lQk9ikE
 
 class Tilemap 
 {

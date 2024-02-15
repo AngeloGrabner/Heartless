@@ -32,6 +32,7 @@ class Editor
 	bool mSelecting = false;
 
 public:
+
 	void Handle(const SDL_Event* e);
 	void Update(Scene* scene);
 	void ClearSelection();
@@ -100,7 +101,7 @@ template<class Archive>
 inline void Scene::save(Archive& ar) const
 {
 	ar(cereal::make_nvp("worldSize", mWorldSize),
-		cereal::make_nvp("Editing",mEditing),
+		cereal::make_nvp("Editing",false),
 		cereal::make_nvp("DQT",mDQT),
 		cereal::make_nvp("TM",mTM),
 		cereal::make_nvp("worldId",mWorldId),

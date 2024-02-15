@@ -16,12 +16,10 @@ ui::Widget::Widget(ui::Widget* parent, SDL_FRect area,
 		{
 			mDepth = parent->GetDepth() +1;
 		}
-	#ifdef _DEBUG
 		else
 		{
-			throw; 
+			SDL_assert(false);
 		}
-	#endif
 	}
 	else
 	{
@@ -41,7 +39,8 @@ ui::Widget::Widget(ui::Widget* parent, SDL_FRect area,
 		mArea.x += pBorder.x + pArea.x + (pArea.w - pBorder.w*2) - mArea.w;
 		break;
 	default:
-		throw;
+		SDL_assert(false);
+		break;
 	}
 	switch (y)
 	{
@@ -55,7 +54,8 @@ ui::Widget::Widget(ui::Widget* parent, SDL_FRect area,
 		mArea.y += pBorder.y + pArea.y + (pArea.h - pBorder.h*2)- mArea.h;
 		break;
 	default:
-		throw;
+		SDL_assert(false);
+		break;
 	}
 }
 
@@ -143,7 +143,7 @@ void ui::Widget::Activate(const std::string& name, bool active)
 void ui::Widget::Update()
 {
 	mChildrinDrawFlag = false;
-	mChildrinDrawFlag = false;
+	mChildrinDebugDrawFlag = false;
 	UpdateChildrin();
 }
 

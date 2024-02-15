@@ -5,6 +5,7 @@ SDL_Rect Renderer::sViewPort = { 0,0,0,0 };
 SDL_FPoint Renderer::sScale = { 1.0f,1.0f };
 SDL_FPoint Renderer::sOffset = { 0.0f,0.0f };
 bool Renderer::sScreenToWorld = false;
+std::vector<std::function<void()>> Renderer::sDelayedCalls;
 
 bool Renderer::Init(SDL_Window* window)
 {
@@ -74,8 +75,13 @@ void Renderer::DrawTexture(Texture texture, const SDL_Rect& pos, double angle, c
 		SDLCHECK(SDL_RenderCopyEx(sRen, texture.tex, &texture.rect, &p, angle, &center, flip));
 	}
 }
+void Renderer::DelayedDraw(std::function<void(void)> func)
+{
+	sDelayedCalls.push_back(func);
+}
 void Renderer::Clear()
 {
+	sDelayedCalls.clear();
 	SDLCHECK(SDL_RenderClear(sRen));
 }
 void Renderer::SetBlendMode(SDL_BlendMode mode)
@@ -104,6 +110,10 @@ Color Renderer::GetColor()
 }
 void Renderer::UpdateScreen()
 {
+	for (int i = 0; i < sDelayedCalls.size(); i++)
+	{
+		sDelayedCalls[i]();
+	}
 	SDL_RenderPresent(sRen);
 }
 void Renderer::SetTarget(SDL_Texture* texture)

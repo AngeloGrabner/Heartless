@@ -85,30 +85,39 @@ namespace ui
 
 		if (mShowOptions)
 		{	
-			auto mousePos = Input::GetMousePos();
-			auto area = mArea;
-			
-			int idx = (mousePos.y-mArea.y) / mArea.h;
+			auto func = [this]() {
+				auto mousePos = Input::GetMousePos();
+				auto area = mArea;
 
-			auto innerArea = GetInnerArea();
+				int idx = (mousePos.y - mArea.y) / mArea.h;
 
-			for (int i = 0; i < mOptions.size(); i++)
-			{
-				Renderer::SetColor(mSelectionBackgroundColor);
-				if (i == idx)
+				auto innerArea = GetInnerArea();
+
+				Renderer::SetScreenMode(false);
+
+				for (int i = 0; i < mOptions.size(); i++)
 				{
-					Color c = {
-						(uint8_t)std::min(mSelectionBackgroundColor.r + 20,255),
-						(uint8_t)std::min(mSelectionBackgroundColor.g + 20,255),
-						(uint8_t)std::min(mSelectionBackgroundColor.b + 20,255)
-					};
-					Renderer::SetColor(c);
+					Renderer::SetColor(mSelectionBackgroundColor);
+					if (i == idx)
+					{
+						Color c = {
+							(uint8_t)std::min(mSelectionBackgroundColor.r + 20,255),
+							(uint8_t)std::min(mSelectionBackgroundColor.g + 20,255),
+							(uint8_t)std::min(mSelectionBackgroundColor.b + 20,255)
+						};
+						Renderer::SetColor(c);
+					}
+					Renderer::FillRect(area);
+					FontWriter::DrawText(cast<SDL_FRect, SDL_Rect>(innerArea), mOptions[i], { mTextScale,mTextScale }, mTextColor, true);
+					
+					
+
+					area.y += area.h;
+					innerArea.y += area.h;
 				}
-				Renderer::FillRect(area);
-				FontWriter::DrawText(cast<SDL_FRect,SDL_Rect>(innerArea), mOptions[i], { mTextScale,mTextScale }, mTextColor, true);
-				area.y += area.h;
-				innerArea.y += area.h;
-			}
+				Renderer::SetScreenMode(true);
+			};
+			Renderer::DelayedDraw(func);
 		}
 		else
 		{

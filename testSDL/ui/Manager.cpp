@@ -18,13 +18,35 @@ ui::Manager& ui::Manager::operator=(Manager&& other) noexcept
 
 void ui::Manager::Handle(const SDL_Event* e)
 {
-	std::string editorCheckbox;
+	std::string name;
 	bool checked;
-	if (EventReceiver::CheckBox(e, editorCheckbox, checked))
+	float val;
+	if (EventReceiver::CheckBox(e, name, checked))
 	{
-		if (editorCheckbox == "editorCheckBox")
+		if (name == "editorCheckBox")
 		{
 			Activate("editorFrame", checked);
+		}
+	}
+	if (EventReceiver::Slider(e, name, val))
+	{
+		if (name == "editorLayerSlider")
+		{
+			if (val == 0.0f)
+			{
+				Activate("editorTileDiv",true);
+				Activate("editorEntityDiv",false);
+			}
+			else if (val == .5f)
+			{
+				Activate("editorTileDiv", false);
+				Activate("editorEntityDiv", true);
+			}
+			else if (val == 1.0f)
+			{
+				Activate("editorTileDiv", true);
+				Activate("editorEntityDiv", false);
+			}
 		}
 	}
 }
@@ -114,7 +136,7 @@ void ui::Manager::Init()
 		{ // tile div
 			SDL_FRect selectTextureArea = SDL_FRect(0, 0, tileDiv->GetInnerArea().w / 2.0f, tileDiv->GetInnerArea().h / 15.0f);
 		
-			(new ui::Select(tileDiv, selectTextureArea, "editorTileTextureSelect", -1))
+			(new ui::Select(tileDiv, selectTextureArea, "editorTileTextureSelect", 6))
 				->AddOption("gras")
 				->AddOption("sand")
 				->AddOption("dirt")
@@ -125,7 +147,7 @@ void ui::Manager::Init()
 
 				->SetBorder({ 2,2,2,2 });
 
-			(new ui::Select(tileDiv, selectTextureArea, "editorTileSubTextureSelect", -1, WIDGET_RIGHT))
+			(new ui::Select(tileDiv, selectTextureArea, "editorTileSubTextureSelect", 6, WIDGET_RIGHT))
 				->AddOption("full")
 				->AddOption("left")
 				->AddOption("right")
@@ -159,14 +181,104 @@ void ui::Manager::Init()
 			{
 				SDL_FRect tileTopArea = SDL_FRect(0, tileDiv->GetInnerArea().h / 14.0f * 2, tileDiv->GetInnerArea().w, tileDiv->GetInnerArea().h / 20.0f);
 
-				(new ui::Select(tileDiv,tileTopArea,"editorTileTopSelect",-1))
+				(new ui::Select(tileDiv,tileTopArea,"editorTileTopSelect",6))
 					->AddOption("No Top")
 					->AddOption("Top")
 					->AddOption("Top on Top")
 
 					->SetBorder({ 2,2,2,2 });
 			}
-			//hier
+			
+		}
+
+		Widget* entityDiv = (new ui::Div(editorFrame, SDL_FRect(0, editorFrame->GetInnerArea().h / 15.0f, editorFrame->GetInnerArea().w, editorFrame->GetInnerArea().h - editorFrame->GetInnerArea().h / 15.0f)))
+			->SetName("editorEntityDiv")
+			->SetBorder({ 5, 5, 5, 5 })
+			->Activate(false);;
+
+		{ // entity div
+
+			/* plan
+			
+				input x
+				input y
+				select stats
+				input stats
+			div item
+				input slot
+				select itme
+				button insert
+				button delete
+			div createNdelete
+				select type 
+				button delete
+				button insert
+			*/
+			Widget* statsDiv = new ui::Div(entityDiv, SDL_FRect(0, 0, entityDiv->GetInnerArea().w, entityDiv->GetInnerArea().h / 4.0f));
+				
+			
+			{ // div stats
+				auto Area = SDL_FRect(0, 0, statsDiv->GetInnerArea().w, statsDiv->GetInnerArea().h / 4.1f);
+				(new ui::InputField(statsDiv, Area, "editorEntityXInputField"))
+					->SetTexture(7)
+					->SetText("X")
+					->SetBorder({ 5,5,5,5 });
+
+				Area.y += Area.h;
+
+				(new ui::InputField(statsDiv, Area, "editorEntityYInputField"))
+					->SetTexture(7)
+					->SetText("Y")
+					->SetBorder({ 5,5,5,5 });
+
+				Area.y += Area.h;
+
+				(new ui::Select(statsDiv, Area, "editorEntityStatsSelect", 6))
+					->AddOption("atk")
+					->AddOption("hp")
+					->AddOption("spd")
+
+					->SetBorder({ 2, 2, 2, 2 });
+
+				Area.y += Area.h;
+
+				(new ui::InputField(statsDiv, Area, "editorEntityStatsInputField"))
+					->SetTexture(7)
+					->SetText("Value")
+					->SetBorder({ 5,5,5,5 });
+			}
+
+			Widget* itemDiv = new ui::Div(entityDiv, SDL_FRect(0, 0, entityDiv->GetInnerArea().w, entityDiv->GetInnerArea().h / 4.0f), WIDGET_LEFT, WIDGET_CENTER);
+		
+			{
+				auto Area = SDL_FRect(0, 0, itemDiv->GetInnerArea().w, itemDiv->GetInnerArea().h / 4.1);
+				
+				(new ui::InputField(itemDiv, Area, "editorEntityItemSoltInputField"))
+					->SetText("Slot number")
+					->SetTexture(7)
+					->SetBorder({ 5,5,5,5 });
+
+				Area.y += Area.h;
+
+				(new ui::Select(itemDiv, Area, "editorEntityItemSelect", 6))
+					->AddOption("todo")
+					
+					->SetBorder({2,2,2,2}); // hier
+
+				Area.y += Area.h;
+
+				(new ui::Button(itemDiv, Area, "editorEntityItemInsertButton", 3))
+					->SetCooldown(50)
+					->SetText("Insert")
+					->SetBorder({2,2,2,2 });
+
+				Area.y += Area.h;
+
+				(new ui::Button(itemDiv, Area, "editorEntityItemDeleteButton", 3))
+					->SetCooldown(50)
+					->SetText("Delete")
+					->SetBorder({ 2,2,2,2 });
+			}
 		}
 	}
 }

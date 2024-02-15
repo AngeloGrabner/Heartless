@@ -2,8 +2,10 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <mutex>
 
 inline std::vector<std::string> loger;
+inline std::mutex logerMut;
 
 #ifdef _DEBUG
 	#define DEBUG
@@ -17,7 +19,16 @@ inline std::vector<std::string> loger;
 
 
 #define LOG_STR(msg) (std::string((msg)) + " file: " + __FILE__ + " line: " + std::to_string(__LINE__))
-#define LOG_PUSH(msg) loger.push_back(LOG_STR(msg))
+#define LOG_PUSH(msg) logerMut.lock();\
+		 loger.push_back(LOG_STR(msg)); \
+			logerMut.unlock()
+
+#define LOG_PRINT logerMut.lock();\
+	for (int i= 0; i < loger.size(); i++) \
+	{ \
+		std::cout << loger[i] << '\n'; \
+	} \
+	logerMut.unlock()
 
 #ifdef _DEBUG
 	#define SDLCHECK(returnVal) if ((returnVal) < 0) {std::cout << "SDL error: " << SDL_GetError() << LOG_STR(" at") <<'\n';} //else {std::cout << "Success " << LOG(" at") << '\n';}
@@ -92,5 +103,5 @@ inline std::string to_string(Rect r)
 template<RECT RectIn, RECT RectOut>
 inline RectOut cast(RectIn rect)
 {
-	return RectOut(rect.x, rect.y, rect.w, rect.h);
+	return RectOut(std::round(rect.x), std::round(rect.y), std::round(rect.w), std::round(rect.h));
 }

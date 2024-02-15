@@ -37,20 +37,17 @@ void TextureManager::Init(const std::string& pathToCSV)
 }
 Texture TextureManager::Get(int id)
 {
-#if _DEBUG
-	if (id < 0)
-		throw;
-#endif
+
+	SDL_assert(id >= 0);
+
 	if (sData.at(id).texId >= 0)
 	{
 		return Texture(sCache[sData[id].texId].tex, sData[id].rect);
 	}
 	else
 	{
-#if _DEBUG
-		if (sData[id].path.empty())
-			throw;
-#endif
+		SDL_assert(!sData[id].path.empty());
+
 		sCache.push_back(LoadBmp(sData[id].path));
 		for (int i = 0; i < sData.size(); i++)
 		{

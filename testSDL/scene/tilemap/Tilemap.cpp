@@ -110,10 +110,9 @@ std::shared_ptr<Tile> Tilemap::Get(size_t x, size_t y, bool worldSpcae)
         y /= mDrawSize.y;
     }
 
-#if _DEBUG
-    if (x >= mSize.x || y >= mSize.y)
-        throw;
-#endif
+
+    SDL_assert(!(x >= mSize.x || y >= mSize.y));
+
     return mMap[c21d(x, y)];
 
 }

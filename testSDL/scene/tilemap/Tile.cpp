@@ -8,10 +8,7 @@ Tile::Tile(int bottomTextureId, TopStatus ts, int topTextureId,
     : mTexId(bottomTextureId), mTexIdTop(topTextureId), 
     mTop(ts), mLight(light), mIsSolid(solid)
 {     
-#ifdef _DEBUG
-    if (ts != NO_TOP && topTextureId < 0)
-        throw;
-#endif
+    SDL_assert(!(ts != NO_TOP && topTextureId < 0));
 }
 
 Tile* Tile::AddAnimation(Millis frameTime, unsigned int frameCount, unsigned int animationCount, bool isBottom)

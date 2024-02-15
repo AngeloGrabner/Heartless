@@ -5,6 +5,8 @@
 #include "Texture.h"
 #include "Color.h"
 
+#include <functional>
+
 class Renderer
 {
 	static SDL_Renderer* sRen;
@@ -12,6 +14,7 @@ class Renderer
 	static SDL_FPoint sScale;
 	static SDL_FPoint sOffset;
 	static bool sScreenToWorld;
+	static std::vector<std::function<void()>> sDelayedCalls;
 public:
 	enum VSync
 	{
@@ -33,6 +36,9 @@ public:
 		double angle, const SDL_Point& center = { INT_MAX,INT_MAX },
 		SDL_RendererFlip flip = SDL_FLIP_NONE);
 	
+	
+	static void DelayedDraw(std::function<void(void)>func);
+
 	static void Clear();
 	static void SetBlendMode(SDL_BlendMode mode);
 	static SDL_BlendMode GetBlendMode();

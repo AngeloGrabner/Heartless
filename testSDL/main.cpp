@@ -22,10 +22,6 @@ int main(int argc, char** arcv)
 	catch (std::exception& e)
 	{
 		std::cout << "catched " << e.what() << std::endl;
-		for (std::string& l : loger)
-		{
-			std::cout << l << '\n';
-		}
 		return -1;
 	}
 #endif // !_DEBUG

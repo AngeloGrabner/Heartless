@@ -5,8 +5,9 @@ std::unordered_map<Event::Type, Uint32> Event::sMap;
 Uint32 Event::AddEvent(Event::Type Id)
 {
     auto eventType = SDL_RegisterEvents(1);
-    if (eventType == (Uint32)-1)
-        throw std::exception(LOG_STR("SDL Can't add Event Type").c_str());
+    
+    SDL_assert(eventType != (Uint32)-1); //SDL Can't add Event Type
+
     sMap[Id] = eventType;
     return eventType;
 }
@@ -176,14 +177,7 @@ void UserEventDeallocator(SDL_Event* e)
     }
 
 
-
-#if _DEBUG
-    if (e->type >= SDL_USEREVENT && e->type < SDL_LASTEVENT && !flag)
-    {
-        //mem leak 
-        throw;
-    }
-#endif
+    SDL_assert(!(e->type >= SDL_USEREVENT && e->type < SDL_LASTEVENT && !flag));
 }
 #undef IF
 #undef ELIF
