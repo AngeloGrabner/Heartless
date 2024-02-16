@@ -38,6 +38,7 @@ void ui::InputField::Update()
 	{
 		mSelected = true;
 		Input::SetKeyboardMode(true);
+		return;
 	}
 	if (mSelected)
 	{

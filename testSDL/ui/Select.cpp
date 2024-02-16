@@ -20,7 +20,7 @@ namespace ui
 		mTextColor(TextColor), mSelectionBackgroundColor(selectionBackgroundColor),
 		mAlignment(alignment), mTexId(textureId)
 	{
-		mTextScale = GetInnerArea().h / (float)FontWriter::GetSize().y;
+
 	}
 
 	Select::Select(Select&& other) noexcept
@@ -52,6 +52,9 @@ namespace ui
 	{
 		if (!mActive)
 			return;
+
+		mTextScale = GetInnerArea().h / (float)FontWriter::GetSize().y;
+
 		Widget::Update();
 		auto mousePos = Input::GetMousePos();
 		//click to expend
@@ -109,8 +112,6 @@ namespace ui
 					}
 					Renderer::FillRect(area);
 					FontWriter::DrawText(cast<SDL_FRect, SDL_Rect>(innerArea), mOptions[i], { mTextScale,mTextScale }, mTextColor, true);
-					
-					
 
 					area.y += area.h;
 					innerArea.y += area.h;
@@ -121,7 +122,7 @@ namespace ui
 		}
 		else
 		{
-			FontWriter::DrawText(cast<SDL_FRect,SDL_Rect>(mArea), mOptions[mIndex], {mTextScale,mTextScale}, mTextColor, true);
+			FontWriter::DrawText(cast<SDL_FRect,SDL_Rect>(GetInnerArea()), mOptions[mIndex], {mTextScale,mTextScale}, mTextColor, true);
 		}
 		
 		DrawChildrin();

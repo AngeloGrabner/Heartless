@@ -11,6 +11,11 @@ Tile::Tile(int bottomTextureId, TopStatus ts, int topTextureId,
     SDL_assert(!(ts != NO_TOP && topTextureId < 0));
 }
 
+bool Tile::operator==(const Tile& other)
+{
+    return Comp(other); // using a virtual member func cuz, virutal operator doesnt work
+}
+
 Tile* Tile::AddAnimation(Millis frameTime, unsigned int frameCount, unsigned int animationCount, bool isBottom)
 {
     if (isBottom)
@@ -74,6 +79,43 @@ void Tile::DrawOnTop(SDL_FRect area)
 void Tile::Handle(const SDL_Event* e)
 {
 
+}
+
+bool Tile::Comp(const Tile& other)
+{
+    if (this == &other)
+        return true;
+
+    if (mIsSolid != other.mIsSolid || mTop != other.mTop)
+    {
+        return false;
+    }
+
+    if (mBottomAni.IsInited() && other.mBottomAni.IsInited())
+    {
+        if (mBottomAni.GetTextureId() != other.mBottomAni.GetTextureId())
+        {
+            return false;
+        }
+    }
+    else if (mTexId != other.mTexId)
+    {
+        return false;
+    }
+
+    if (mTopAni.IsInited() && other.mTopAni.IsInited())
+    {
+        if (mTopAni.GetTextureId() != other.mTopAni.GetTextureId())
+        {
+            return false;
+        }
+    }
+    else if (mTexIdTop != other.mTexIdTop)
+    {
+        return false;
+    }
+
+    return true;
 }
 
 void Tile::SetTop(TopStatus status)

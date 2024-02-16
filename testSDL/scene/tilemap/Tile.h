@@ -27,6 +27,9 @@ public:
 	Tile() = default;//for cereal
 	Tile(int bottomTextureId, TopStatus ts = NO_TOP, int topTextureId = -1,
 	bool solid = false, uint8_t light = 0);
+
+	bool operator==(const Tile& other);
+
 	//use addanimation to set animations
 	Tile* AddAnimation(Millis frameTime, unsigned int frameCount,
 		unsigned int animationCount = 1, bool isBottom = true);
@@ -35,6 +38,10 @@ public:
 	virtual void Draw(SDL_FRect area);
 	virtual void DrawOnTop(SDL_FRect area);
 	virtual void Handle(const SDL_Event* e);
+
+protected:
+	virtual bool Comp(const Tile& other);
+public:
 
 	template<class Archive>
 	void save(Archive& ar) const;

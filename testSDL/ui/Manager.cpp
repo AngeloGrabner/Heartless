@@ -269,14 +269,40 @@ void ui::Manager::Init()
 
 				(new ui::Button(itemDiv, Area, "editorEntityItemInsertButton", 3))
 					->SetCooldown(50)
-					->SetText("Insert")
+					->SetText("Insert itm")
 					->SetBorder({2,2,2,2 });
 
 				Area.y += Area.h;
 
 				(new ui::Button(itemDiv, Area, "editorEntityItemDeleteButton", 3))
 					->SetCooldown(50)
-					->SetText("Delete")
+					->SetText("Delete itm")
+					->SetBorder({ 2,2,2,2 });
+			}
+
+			ui::Widget* createNDelteDiv = new ui::Div(entityDiv, SDL_FRect(0, 0, entityDiv->GetInnerArea().w, entityDiv->GetInnerArea().h / 4.0f), WIDGET_LEFT, WIDGET_BOTTOM);
+
+			{
+				auto Area = SDL_FRect(0, 0, itemDiv->GetInnerArea().w, itemDiv->GetInnerArea().h / 4.1);
+
+				(new ui::Select(createNDelteDiv,Area,"editorEntityTypeSelect",6))
+					->AddOption("todo type")
+
+					->SetBorder({ 2,2,2,2 });
+
+				Area.y += Area.h;
+
+				(new ui::Button(createNDelteDiv, Area,"editorEntityInsertButton",3))
+					->SetCooldown(50)
+					->SetText("Insert entt")
+					->SetBorder({ 2,2,2,2 });
+
+				Area.y += Area.h;
+
+
+				(new ui::Button(createNDelteDiv, Area, "editorEntityDeleteButton", 3))
+					->SetCooldown(50)
+					->SetText("Delete entt")
 					->SetBorder({ 2,2,2,2 });
 			}
 		}

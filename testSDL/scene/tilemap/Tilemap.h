@@ -54,8 +54,36 @@ inline void Tilemap::save(Archive& ar) const
 {
 	ar(cereal::make_nvp("drawSize", mDrawSize),
 		cereal::make_nvp("skylight",mSkylight),
-		cereal::make_nvp("size", mSize),
-		cereal::make_nvp("map",mMap));
+		cereal::make_nvp("size", mSize));
+
+	std::vector<std::shared_ptr<Tile>> saveList;
+	std::vector<uint32_t> idxMap(mMap.size());
+	bool insertFlag = true;
+
+
+	//hier
+
+	for (int i = 0; i < mMap.size(); i++)
+	{
+		insertFlag = true;
+		for (int j = 0; j < saveList.size(); j++)
+		{
+			if (saveList[j]->operator==(*mMap[i]))
+			{
+				insertFlag = false;
+				idxMap[i] = j;
+				break;
+			}
+		}
+		if (insertFlag)
+		{
+			saveList.push_back(mMap[i]);
+			idxMap[i] = saveList.size()-1;
+		}
+	}
+
+	ar(cereal::make_nvp("saveList", saveList),
+		cereal::make_nvp("indexMap",idxMap));
 }
 
 template<class Archive>
@@ -63,6 +91,15 @@ inline void Tilemap::load(Archive& ar)
 {
 	ar(mDrawSize, mSkylight, mSize);
 
+	std::vector<std::shared_ptr<Tile>> saveList;
+	std::vector<uint32_t> idxMap;
+
+	ar(saveList, idxMap);
+
 	mMap = std::vector<std::shared_ptr<Tile>>(mSize.x * mSize.y);
-	ar(mMap);
+
+	for (int i = 0; i < idxMap.size(); i++)
+	{
+		mMap[i] = saveList[idxMap[i]];
+	}
 }
