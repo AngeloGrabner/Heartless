@@ -60,6 +60,7 @@ namespace ui
 		Widget* Activate(bool active);
 		void Activate(const std::string& name, bool active);
 
+		virtual void Handle(const SDL_Event* e);
 		virtual void Update();
 		virtual void Draw() = 0;
 		virtual void DebugDraw();

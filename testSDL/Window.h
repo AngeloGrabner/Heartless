@@ -21,6 +21,11 @@ public:
 	static void SetDisplayMode(const SDL_DisplayMode& m);
 	static void SetFullscreen(FullScreen flags);
 
+	// .bmp file 
+	static void SetIcon(const std::string& pathToIcon);
+	static void SetTitle(const std::string& titel);
+
+
 	static SDL_DisplayMode GetDispalyMode();
 	static SDL_Window* Get();
 	static SDL_Point GetSize();

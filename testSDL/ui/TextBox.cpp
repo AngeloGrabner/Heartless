@@ -6,6 +6,17 @@ ui::TextBox::TextBox(Widget* parent, SDL_FRect area, const std::string& name, in
 {
 }
 
+void ui::TextBox::Handle(const SDL_Event* e)
+{
+	Handle(e);
+	std::string name, text; 
+	if (EventReceiver::ReTextBox(e, name, text))
+	{
+		if (name == mName)
+			mText = text;
+	}
+}
+
 void ui::TextBox::Draw()
 {
 	if (!mActive)

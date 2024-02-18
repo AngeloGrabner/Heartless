@@ -30,6 +30,7 @@ class Editor
 	using QT_List = std::list<Interbundle<DynamicQuadTree<std::shared_ptr<Entity>, SDL_FRect, QT_SIZE>::ITER, SDL_FRect>>;
 	QT_List mSelectedEntities;
 	bool mSelecting = false;
+	std::string mSelectedEntityStat = "atk";
 
 public:
 
@@ -38,6 +39,7 @@ public:
 	void ClearSelection();
 	void DoCamDrag(Scene* scene);
 	void DoSelceting(Scene* scene);
+	void SetSingleEntityUiData();
 	void Draw(Scene* scene);
 };
 

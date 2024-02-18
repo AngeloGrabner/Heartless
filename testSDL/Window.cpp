@@ -36,6 +36,23 @@ void Window::SetFullscreen(FullScreen flags)
 	SDL_SetWindowFullscreen(sWin, flags);
 }
 
+void Window::SetIcon(const std::string& pathToIcon)
+{
+	SDL_Surface* sur = nullptr;
+	sur = SDL_LoadBMP(pathToIcon.c_str());
+	if (sur)
+	{
+		SDL_SetWindowIcon(sWin, sur);
+
+		SDL_FreeSurface(sur);
+	}
+}
+
+void Window::SetTitle(const std::string& titel)
+{
+	SDL_SetWindowTitle(sWin, titel.c_str());
+}
+
 SDL_DisplayMode Window::GetDispalyMode()
 {
 	SDL_DisplayMode m;

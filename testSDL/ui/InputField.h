@@ -23,6 +23,7 @@ namespace ui
 		InputField* SetText(const std::string& defaultText);
 		InputField* SetFont(int fontId);
 
+		void Handle(const SDL_Event* e) override;
 		void Update() override;
 		void Draw() override;
 	};

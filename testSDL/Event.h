@@ -10,9 +10,10 @@ public:
 	enum Type : uint8_t
 	{
 		UI_EVENT,
+		RE_UI_EVENT,
 		CAMERA_EVENT,
-		EDITOR,
-		//...
+		EDITOR_EVENT,
+		//... game evetns
 		LAST_EVENT // dont use this. it is for init 
 	};
 private:
@@ -31,6 +32,9 @@ namespace EventBuilder
 	void Slider(const std::string& name, float val);
 	void Select(const std::string& name, const std::string& selected);
 	
+	void ReInputField(const std::string& name, const std::string& text);
+	void ReLabel(const std::string& name, const std::string& text);
+	void ReTextBox(const std::string& name, const std::string& text);
 
 	void PlayerDied(size_t id); //todo
 }
@@ -41,6 +45,10 @@ namespace EventReceiver
 	bool InputField(const SDL_Event* e, std::string& name, std::string& text);
 	bool Slider(const SDL_Event* e, std::string& name, float& value);
 	bool Select(const SDL_Event* e, std::string& name, std::string& selected);
+
+	bool ReIputField(const SDL_Event* e,std::string& name, std::string& text);
+	bool ReLabel(const SDL_Event* e,std::string& name, std::string& text);
+	bool ReTextBox(const SDL_Event* e,std::string& name, std::string& text);
 
 }
 void UserEventDeallocator(SDL_Event* e);

@@ -13,7 +13,7 @@ Scene::Scene(SDL_Point WorldSize)
 	: mWorldSize(WorldSize)
 {
 	mCam = Camera(SDL_FPoint{ (float)WorldSize.x * TILE_SIZE,(float)WorldSize.y * TILE_SIZE });
-	mTM = Tilemap(WorldSize.x, WorldSize.y, { 16,16 });
+	mTM = Tilemap(WorldSize.x, WorldSize.y, { 16.1f,16.1f });
 	for (int y  =0; y < WorldSize.y; y++)
 		for (int x = 0; x < WorldSize.x; x++)
 		{
@@ -257,12 +257,14 @@ void Scene::InternHandle(const SDL_Event* e)
 
 
 
+
 void Editor::Handle(const SDL_Event* e)
 {
 	std::string name;
 	float sliderVal;
-	std::string selectVal;
+	std::string text;
 	bool checkBoxVal;
+
 	if (EventReceiver::Slider(e, name, sliderVal))
 	{
 		if (name == "editorLayerSlider")
@@ -285,7 +287,7 @@ void Editor::Handle(const SDL_Event* e)
 			}
 		}
 	}
-	else if (EventReceiver::Select(e,name,selectVal))
+	else if (EventReceiver::Select(e, name, text))
 	{
 		static int row = 0, colum = 0;
 		static Tile::TopStatus top = Tile::NO_TOP;
@@ -293,31 +295,31 @@ void Editor::Handle(const SDL_Event* e)
 		if (name == "editorTileTextureSelect")
 		{
 			flag = true;
-			if (selectVal == "gras")
+			if (text == "gras")
 			{
 				row = 0;
 			}
-			else if (selectVal == "sand")
+			else if (text == "sand")
 			{
 				row = 1;
 			}
-			else if (selectVal == "dirt")
+			else if (text == "dirt")
 			{
-				row =2;
+				row = 2;
 			}
-			else if (selectVal == "snow")
+			else if (text == "snow")
 			{
 				row = 3;
 			}
-			else if (selectVal == "stone brick w")
+			else if (text == "stone brick w")
 			{
 				row = 4;
 			}
-			else if (selectVal == "dirt w")
+			else if (text == "dirt w")
 			{
 				row = 5;
 			}
-			else if (selectVal == "stone w")
+			else if (text == "stone w")
 			{
 				row = 6;
 			}
@@ -326,60 +328,60 @@ void Editor::Handle(const SDL_Event* e)
 				SDL_assert(false); //unknown Texture
 			}
 
-			
+
 		}
 		else if (name == "editorTileSubTextureSelect")
 		{
 			flag = true;
-			if (selectVal == "full")
+			if (text == "full")
 			{
 				colum = 0;
 			}
-			else if (selectVal == "left")
+			else if (text == "left")
 			{
 				colum = 1;
 			}
-			else if (selectVal == "right")
+			else if (text == "right")
 			{
 				colum = 2;
 			}
-			else if (selectVal == "bottom")
+			else if (text == "bottom")
 			{
 				colum = 3;
 			}
-			else if (selectVal == "top")
+			else if (text == "top")
 			{
 				colum = 4;
 			}
-			else if (selectVal == "inner t l")
+			else if (text == "inner t l")
 			{
 				colum = 5;
 			}
-			else if (selectVal == "inner t r")
+			else if (text == "inner t r")
 			{
 				colum = 6;
 			}
-			else if (selectVal == "inner b l")
+			else if (text == "inner b l")
 			{
 				colum = 7;
 			}
-			else if (selectVal == "inner b r")
+			else if (text == "inner b r")
 			{
 				colum = 8;
 			}
-			else if (selectVal == "outer t l")
+			else if (text == "outer t l")
 			{
 				colum = 9;
 			}
-			else if (selectVal == "outer t r")
+			else if (text == "outer t r")
 			{
 				colum = 10;
 			}
-			else if (selectVal == "outer b l")
+			else if (text == "outer b l")
 			{
 				colum = 11;
 			}
-			else if (selectVal == "outer b r")
+			else if (text == "outer b r")
 			{
 				colum = 12;
 			}
@@ -390,16 +392,16 @@ void Editor::Handle(const SDL_Event* e)
 		}
 		else if (name == "editorTileTopSelect")
 		{
-			
-			if (selectVal == "No Top")
+
+			if (text == "No Top")
 			{
 				top = Tile::NO_TOP;
 			}
-			else if (selectVal == "Top")
+			else if (text == "Top")
 			{
 				top = Tile::TOP;
 			}
-			else if (selectVal == "Top on Top")
+			else if (text == "Top on Top")
 			{
 				top = Tile::TOP_ONTOP;
 			}
@@ -408,11 +410,15 @@ void Editor::Handle(const SDL_Event* e)
 				SDL_assert(false); //unkonw tile top... type.. whatever
 			}
 
-			
+
 			for (auto ptr : mSelectedTiles)
 			{
 				ptr->SetTop(top);
 			}
+		}
+		else if (name == "editorEntityStatsSelect")
+		{
+			mSelectedEntityStat = text;
 		}
 		if (flag)
 		{
@@ -430,7 +436,7 @@ void Editor::Handle(const SDL_Event* e)
 				{
 					for (auto ptr : mSelectedTiles)
 					{
-						ptr->SetTopTexture(row* textureTypes + colum + offset);
+						ptr->SetTopTexture(row * textureTypes + colum + offset);
 					}
 				}
 			}
@@ -451,6 +457,78 @@ void Editor::Handle(const SDL_Event* e)
 			{
 				ptr->SetSolid(checkBoxVal);
 			}
+		}
+	}
+	else if (EventReceiver::InputField(e, name, text))
+	{
+		if (name == "editorEntityXInputField")
+		{
+			float offx = 0;
+			try
+			{
+				offx = std::stof(text);
+			}
+			catch (std::exception& e) 
+			{
+				EventBuilder::ReInputField("editorEntityXInputField","NaN");
+				LOG_PUSH(e.what());
+			}
+			for (auto& en : mSelectedEntities)
+			{
+				en.data->item->HitBox().x += offx;
+			}
+			SetSingleEntityUiData();
+		}
+		else if (name == "editorEntityYInputField")
+		{
+			float offy = 0;
+			try
+			{
+				offy = std::stof(text);
+			}
+			catch (std::exception& e)
+			{
+				EventBuilder::ReInputField("editorEntityYInputField", "NaN");
+				LOG_PUSH(e.what());
+			}
+			for (auto& en : mSelectedEntities)
+			{
+				en.data->item->HitBox().y += offy;
+			}
+			SetSingleEntityUiData();
+		}
+		else if (name == "editorEntityStatsInputField")
+		{
+			try
+			{
+				StatPack sp;
+				for (auto& enttPtr : mSelectedEntities)
+				{
+					sp = enttPtr.data->item->GetStats();
+					if (mSelectedEntityStat == "atk")
+					{
+						sp.atk = (int)std::round(std::stof(text));
+					}
+					else if (mSelectedEntityStat == "hp")
+					{
+						sp.hp = (int)std::round(std::stof(text));
+					}
+					else if (mSelectedEntityStat == "spd")
+					{
+						sp.spd = std::round(std::stof(text));
+					}
+					else
+						SDL_assert(false); // unsupported stats
+					enttPtr.data->item->SetStats(sp);
+				}
+				SetSingleEntityUiData();
+			}
+			catch (std::exception& e)
+			{
+				EventBuilder::ReInputField("editorEntityStatsInputField","NaN");
+				LOG_PUSH(e.what());
+			}
+			
 		}
 	}
 }
@@ -480,11 +558,11 @@ void Editor::DoCamDrag(Scene* scene)
 	}
 	if (Input::GetWheel().y < 0)
 	{
-		scene->GetCamera().SetScaleRel(SDL_FPoint{ 0.8,0.8 });
+		scene->GetCamera().SetScaleRel(SDL_FPoint{ 0.5,0.5 });
 	}
 	else if (Input::GetWheel().y > 0)
 	{
-		scene->GetCamera().SetScaleRel(SDL_FPoint{ 1.2,1.2 });
+		scene->GetCamera().SetScaleRel(SDL_FPoint{ 2.0,2.0 });
 	}
 }
 
@@ -530,6 +608,37 @@ void Editor::DoSelceting(Scene* scene)
 		auto pos = scene->ScreenToWorld(Input::GetMousePos());
 		mSelectionArea.x = pos.x;
 		mSelectionArea.y = pos.y;
+	}
+}
+
+void Editor::SetSingleEntityUiData()
+{
+	if (mSelectedEntities.size() == 1)
+	{
+		auto x = std::to_string(mSelectedEntities.front().data->item->GetHitBox().x);
+		auto y = std::to_string(mSelectedEntities.front().data->item->GetHitBox().y);
+		EventBuilder::ReInputField("editorEntityXInputField", x);
+		EventBuilder::ReInputField("editorEntityYInputField", y);
+
+		std::string text;
+		if (mSelectedEntityStat == "atk")
+		{
+			text = std::to_string(mSelectedEntities.front().data->item->GetStats().atk);
+		}
+		else if (mSelectedEntityStat == "hp")
+		{
+			text = std::to_string(mSelectedEntities.front().data->item->GetStats().hp);
+		}
+		else if (mSelectedEntityStat == "spd")
+		{
+			text = std::to_string(mSelectedEntities.front().data->item->GetStats().spd);
+		}
+		else
+		{
+			SDL_assert(false); // unsupported stat
+			text = "error";
+		}
+		EventBuilder::ReInputField("editorEntityStatsInputField", text);
 	}
 }
 

@@ -32,8 +32,8 @@
                                             "h": 0.0
                                         },
                                         "hitbox": {
-                                            "x": 193.6799774169922,
-                                            "y": 24.750064849853517,
+                                            "x": 48.0,
+                                            "y": 48.30000305175781,
                                             "w": 16.0,
                                             "h": 16.0
                                         },
@@ -84,8 +84,8 @@
         },
         "TM": {
             "drawSize": {
-                "x": 16.0,
-                "y": 16.0
+                "x": 16.100000381469728,
+                "y": 16.100000381469728
             },
             "skylight": 16,
             "size": {
@@ -120,196 +120,6 @@
                             "texId": 11,
                             "top": 0,
                             "textIdTop": -1,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483654,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": 55,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483655,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": 54,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483656,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": 56,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483657,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": 51,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483658,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": -1,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483659,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": 52,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483660,
-                        "data": {
-                            "texId": 24,
-                            "top": 0,
-                            "textIdTop": -1,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483661,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": 57,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483662,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": 53,
-                            "bottomAni": {
-                                "value0": false
-                            },
-                            "topAni": {
-                                "value0": false
-                            },
-                            "isSolid": false,
-                            "light": 0
-                        }
-                    }
-                },
-                {
-                    "polymorphic_id": 1073741824,
-                    "ptr_wrapper": {
-                        "id": 2147483663,
-                        "data": {
-                            "texId": 37,
-                            "top": 2,
-                            "textIdTop": 58,
                             "bottomAni": {
                                 "value0": false
                             },
@@ -438,9 +248,9 @@
                 1,
                 1,
                 1,
-                2,
-                3,
-                4,
+                1,
+                1,
+                1,
                 1,
                 1,
                 1,
@@ -538,9 +348,9 @@
                 1,
                 1,
                 1,
-                5,
-                6,
-                7,
+                1,
+                1,
+                1,
                 1,
                 1,
                 1,
@@ -630,113 +440,13 @@
                 1,
                 1,
                 1,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
                 1,
-                9,
-                10,
-                11,
                 1,
                 1,
                 1,
                 1,
                 1,
                 1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                0,
-                1,
-                1,
-                1,
-                1,
-                1,
-                1,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
                 1,
                 1,
                 1,
@@ -830,13 +540,13 @@
                 1,
                 1,
                 1,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
                 1,
                 1,
                 1,
@@ -930,13 +640,13 @@
                 1,
                 1,
                 1,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
                 1,
                 1,
                 1,
@@ -1030,13 +740,13 @@
                 1,
                 1,
                 1,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
                 1,
                 1,
                 1,
@@ -1130,13 +840,13 @@
                 1,
                 1,
                 1,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
                 1,
                 1,
                 1,
@@ -1230,13 +940,113 @@
                 1,
                 1,
                 1,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
-                8,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                0,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
+                1,
                 1,
                 1,
                 1,
@@ -10328,7 +10138,7 @@
         "worldId": 0,
         "cam": {
             "value0": {
-                "x": 41.67997741699219,
+                "x": 0.0,
                 "y": 0.0
             },
             "value1": {

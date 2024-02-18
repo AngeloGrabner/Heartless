@@ -28,6 +28,20 @@ ui::InputField* ui::InputField::SetFont(int fontId)
 	return this;
 }
 
+void ui::InputField::Handle(const SDL_Event* e)
+{
+	Widget::Handle(e);
+	std::string name, text;
+	if (EventReceiver::ReIputField(e, name, text))
+	{
+		if (name == mName)
+		{
+			mText = text;
+			mCursor = mText.size();
+		}
+	}
+}
+
 void ui::InputField::Update()
 {
 	if (!mActive)

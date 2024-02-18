@@ -18,6 +18,11 @@ ui::Manager& ui::Manager::operator=(Manager&& other) noexcept
 
 void ui::Manager::Handle(const SDL_Event* e)
 {
+	for (auto& ptr : mWidgets)
+	{
+		ptr->Handle(e);
+	}
+
 	std::string name;
 	bool checked;
 	float val;

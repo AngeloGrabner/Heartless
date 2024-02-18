@@ -8,6 +8,17 @@ ui::Label::Label(Widget* parent, SDL_FRect area, const std::string& name, Widget
 	mTextScale.x = mTextScale.y;
 }
 
+void ui::Label::Handle(const SDL_Event* e)
+{
+	Widget::Handle(e);
+	std::string name, text;
+	if (EventReceiver::ReLabel(e, name, text))
+	{
+		if (name == mName)
+			mText = text;
+	}
+}
+
 void ui::Label::Draw()
 {
 	if (!mActive)

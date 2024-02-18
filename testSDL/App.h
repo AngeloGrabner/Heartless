@@ -12,7 +12,6 @@
 #include "cereal/archives/json.hpp"
 #include <fstream>
 
-// player movement Causses Stuttering
 
 class App
 {
@@ -35,12 +34,16 @@ public:
 		Input::Init();
 		Event::Init();
 		mUim.Init();
+
+		Window::SetIcon("../res/heart.bmp");
+
 		Renderer::SetScreenMode(false);
-		Renderer::SetVSync(Renderer::VSYNC_ENABLE);
+		Renderer::SetVSync(Renderer::VSYNC_DISABLE);
+
 	}
 	bool Init()
 	{
-		if (false)
+		if (true)
 		{	
 			mScene = Scene({ 100,100 });
 	
@@ -74,7 +77,7 @@ public:
 		Sound::WaitForLoad();
 		return true;
 	}
-	void Run() // player aint showing tip: use ceature class
+	void Run() 
 	{
 		
 		while (mRunning)

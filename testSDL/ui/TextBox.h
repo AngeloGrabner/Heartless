@@ -16,6 +16,7 @@ namespace ui
 			const std::string& text = "", Color textColor = WHITE, 
 			float TextScale = 1.0f);
 
+		void Handle(const SDL_Event* e);
 		void Draw() override;
 		void DebugDraw() override;
 

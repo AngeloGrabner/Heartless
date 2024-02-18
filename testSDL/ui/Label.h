@@ -21,6 +21,7 @@ namespace ui
 			WidgetPostion HorizontalTextAlignment = WIDGET_CENTER,
 			const std::string& text = "");
 
+		void Handle(const SDL_Event* e) override;
 		void Draw() override;
 
 		Label* SetAlignment(WidgetPostion horizontal);

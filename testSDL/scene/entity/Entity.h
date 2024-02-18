@@ -63,6 +63,7 @@ public:
 
 	SDL_FRect AbsDrawBox() const;
 	const SDL_FRect GetHitBox() const;
+	SDL_FRect& HitBox();
 
 	void SetStats(const StatPack& stats);
 	StatPack GetStats() const;

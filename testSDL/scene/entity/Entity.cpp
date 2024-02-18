@@ -90,6 +90,11 @@ const SDL_FRect Entity::GetHitBox() const
 	return mHitBox;
 }
 
+SDL_FRect& Entity::HitBox()
+{
+	return mHitBox;
+}
+
 void Entity::SetStats(const StatPack& stats)
 {
 	mStats = stats;

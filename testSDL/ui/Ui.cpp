@@ -140,6 +140,14 @@ void ui::Widget::Activate(const std::string& name, bool active)
 }
 
 
+void ui::Widget::Handle(const SDL_Event* e)
+{
+	for (auto& ptr : mChilds)
+	{
+		ptr->Handle(e);
+	}
+}
+
 void ui::Widget::Update()
 {
 	mChildrinDrawFlag = false;
