@@ -74,17 +74,17 @@ void CSV::Load(const std::string& path)
 		}
 		else if (data[i] == '"')
 		{
-			if (!quotatedPrev) 
+			if (!quotated)
 			{
-				quotatedPrev = true;
-				quotated = !quotated;
+				quotated = true;
+			}
+			else if (data[i + 1] != '"')
+			{
+				quotated = false;
 			}
 		}
 
-		if (quotatedPrev && data[i] != '"')
-		{
-			quotatedPrev = false;
-		}
+
 	}
 	ToCell(size, offset, data);
 
@@ -118,52 +118,47 @@ void CSV::ToCell(int i, int offset, char* data) // offset is start, i is end
 		}
 		else break;
 	}
+
+	if (data[offset] == '"')
+	{
+		offset++;
+	}
+	if (data[i] == '"')
+	{
+		i--;
+	}
+
 	bool quotatedPrev = false;
+	char* buf = nullptr;
+
 	if (i - offset < CSV_BUFFER_SIZE - 1) // prevent buffer overflow
 	{
-		int index = 0; 
-		for (char* it = (char*)(data + offset); it < (char*)(data + i); it++)
-		{
-			if ((*it) == '"' && !quotatedPrev)
-			{
-				//if (it + 1 < data + i)
-				//{
-				//	if (*(it + 1) == '"' && ! quotatedPrev) // triple quote at the start 
-				//	{
-
-				//	}
-				//}
-				quotatedPrev = true;
-				continue;
-			}
-			else
-				quotatedPrev = false;
-			mBuffer[index] = *it;
-			index++;
-		}
-		//SDL_memcpy(mBuffer, data + offset, i - offset);
-		mBuffer[i - offset] = 0;
-		mData[mData.size() - 1].push_back(mBuffer);
+		buf = mBuffer;
 	}
 	else
 	{
-		char* freeMe = (char*)SDL_malloc(sizeof(char) * (i - offset));
+		buf = (char*)SDL_malloc(sizeof(char) * (i - offset));
+	}
 
-		for (char* it = (char*)(data + offset); it < (char*)(data + i - offset); it++)
+	int index = 0;
+	for (char* it = (char*)(data + offset); it < (char*)(data + i); it++)
+	{
+		if ((*it) == '"' && !quotatedPrev)
 		{
-			if ((*it) == '"' && !quotatedPrev)
-			{
-				quotatedPrev = true;
-				continue;
-			}
-			else
-				quotatedPrev = false;
-			freeMe[it - (data + offset)] = *it;
+			quotatedPrev = true;
+			continue;
 		}
-		//SDL_memcpy(freeMe, data + offset, i - offset);
-		freeMe[i - offset] = 0;
-		mData[mData.size() - 1].push_back(freeMe);
+		else
+			quotatedPrev = false;
+		buf[index] = *it;
+		index++;
+	}
+	//SDL_memcpy(mBuffer, data + offset, i - offset);
+	buf[i - offset] = 0;
+	mData[mData.size() - 1].push_back(buf);
 
-		SDL_free(freeMe);
+	if (!(i - offset < CSV_BUFFER_SIZE - 1))
+	{
+		SDL_free(buf);
 	}
 }

@@ -98,7 +98,7 @@ void ui::Frame::DebugDraw()
 	bool flag = mChildrinDebugDrawFlag;
 	mChildrinDebugDrawFlag = true;
 	Widget::DebugDraw();
-	if (flag)
+	if (!flag)
 		mChildrinDebugDrawFlag = false;
 	DebugDrawChildrin();
 }

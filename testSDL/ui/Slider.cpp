@@ -53,7 +53,6 @@ void ui::Slider::Update()
 	if (!mActive)
 		return;
 	Widget::Update();
-	UpdateChildrin();
 	if (mHeld)
 	{
 		if (mVert)
@@ -129,7 +128,7 @@ void ui::Slider::DebugDraw()
 	Widget::DebugDraw();
 	Renderer::SetColor(MAGENTA);
 	Renderer::DrawRect(mSliderArea);
-	if (flag)
+	if (!flag)
 		mChildrinDebugDrawFlag = false;
 	DebugDrawChildrin();
 }

@@ -39,7 +39,7 @@ namespace ui
 		static std::unordered_map<char, int> sLookupTable;
 	public:
 		// row 0: list of supported charaters 
-		// row 1: textureID,fontType,width,height,xOffset,yOffset,followed by custom charater width
+		// row 1: textureID,fontId,width,height,xOffset,yOffset,followed by custom charater width
 		static void Init(const std::string& pathToCSV);
 		// returns the position of the last drawn charater 
 		static Drawprogress DrawText(SDL_Rect area, 
@@ -52,6 +52,9 @@ namespace ui
 		//returns monospace size if char is null, else custom char size
 		static SDL_Point GetSize(char c = 0);	
 		static SDL_Point GetCharSpacing();
+
+		//retuns the length, ignores new lines;
+		static SDL_FPoint GetStrSize(const std::string& text, SDL_FPoint scale = { 1.0f,1.0f });
 
 	};
 }

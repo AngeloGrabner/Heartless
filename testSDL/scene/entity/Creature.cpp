@@ -24,7 +24,37 @@ bool Creature::Update()
 	if (mController)
 	{
 		mController->Update();
+		auto dirCache = mDir;
 		mDir = mController->GetDir();
+
+		if (mAni)
+		{
+			if (mDir.x != dirCache.x || mDir.y != dirCache.y)
+			{	
+				if (mDir.y == 1)
+				{
+					//hard coded animation values see player.bmp or simular
+					mAni->SetAnimation(0);
+				}
+				else if (mDir.y == -1)
+				{
+					mAni->SetAnimation(1);
+				}
+				else if (mDir.x == 1)
+				{
+					mAni->SetAnimation(2);
+				}
+				else if (mDir.x == -1)
+				{
+					mAni->SetAnimation(3);
+				}
+
+			}
+			else if (mDir.x == 0 && mDir.y == 0)
+			{
+				mAni->ResetFrame();
+			}
+		}
 	}
 	auto dt = MStoF(Timer::GetGlobalDT());
 	//todo: item useage

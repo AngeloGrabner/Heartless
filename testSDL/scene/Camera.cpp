@@ -88,15 +88,8 @@ void Camera::clamp()
 {
 	if (mClap)
 	{
-		try
-		{
-			mPos.x = std::clamp(mPos.x, 0.0f, mWorldSize.x - mScreenSize.x / mScale.x);
-			mPos.y = std::clamp(mPos.y, 0.0f, mWorldSize.y - mScreenSize.y / mScale.y);
-		}
-		catch (std::exception& e)
-		{
-			LOG_PUSH(e.what());
-		}
+		mPos.x = std::clamp(mPos.x, 0.0f, std::max(mWorldSize.x - mScreenSize.x / mScale.x, 0.0f));
+		mPos.y = std::clamp(mPos.y, 0.0f, std::max(mWorldSize.y - mScreenSize.y / mScale.y, 0.0f));
 	}
 }
 

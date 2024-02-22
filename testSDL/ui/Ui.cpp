@@ -157,6 +157,8 @@ void ui::Widget::Update()
 
 void ui::Widget::DebugDraw()
 {
+	if (!mActive)
+		return;
 	Renderer::SetColor(RED);
 	Renderer::DrawRect(mArea);
 	Renderer::SetColor(GREEN);

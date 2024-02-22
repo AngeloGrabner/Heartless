@@ -1,6 +1,7 @@
 #include "Font.h"
 #include "../CSV.h"
 #include "../TextureManager.h"
+#include <cstdint>
 
 std::vector<ui::Font> ui::FontWriter::sFonts;
 int ui::FontWriter::sSelected = -1;
@@ -12,6 +13,13 @@ void ui::FontWriter::Init(const std::string& pathToCSV)
 	sSelected = 0;
 	CSV csv(pathToCSV);
 	const auto& row0 = csv.GetRow(0);
+
+	// unknown chars will default to the first registert char
+	for (int i = 0; i < CHAR_MAX; i++)
+	{
+		sLookupTable[i] = 0;
+	}
+
 	for (int i = 0; i < row0.size(); i++)
 		sLookupTable[row0[i][0]] = i;
 	for (int i = 1; i < csv.GetRowCount(); i++)
@@ -37,68 +45,77 @@ void ui::FontWriter::Init(const std::string& pathToCSV)
 
 ui::FontWriter::Drawprogress ui::FontWriter::DrawText(SDL_Rect area, const std::string& text, SDL_FPoint scale, Color tint, bool breakOnnewLine)
 {
-	const Font& font = sFonts.at(sSelected);
-	Texture tex =  TextureManager::Get(font.texID);
-	tex.SetTint(tint);
-
-	SDL_Rect textureRect = tex.rect;
-	SDL_Rect drawPos = { area.x,area.y, (int)(font.charSize.x*scale.x),(int)(font.charSize.y* scale.y)};
-	int offset = font.charSize.x;
-	tex.rect.w = font.charSize.x;
-	for (int i = 0; i < text.size(); i++)
+	try
 	{
-		tex.rect.x = textureRect.x + sLookupTable[text[i]]* font.charSize.x;
-		
-		if (text[i] == '\n')
+		const Font& font = sFonts.at(sSelected);
+		Texture tex = TextureManager::Get(font.texID);
+		tex.SetTint(tint);
+
+		SDL_Rect textureRect = tex.rect;
+		SDL_Rect drawPos = { area.x,area.y, (int)(font.charSize.x * scale.x),(int)(font.charSize.y * scale.y) };
+		int offset = font.charSize.x;
+		tex.rect.w = font.charSize.x;
+		for (int i = 0; i < text.size(); i++)
 		{
-			if (breakOnnewLine)
+			tex.rect.x = textureRect.x + sLookupTable[text[i]] * font.charSize.x;
+
+			if (text[i] == '\n')
 			{
-				return { false,i,drawPos };
+				if (breakOnnewLine)
+				{
+					return { false,i,drawPos };
+				}
+				drawPos.x = area.x;
+				drawPos.y += drawPos.h + (int)(font.yOffset * scale.y);
+				if (area.y + area.h < drawPos.y + drawPos.h)
+				{
+					return { false,i,drawPos };
+				}
+				continue;
 			}
-			drawPos.x = area.x;
-			drawPos.y += drawPos.h + (int)(font.yOffset * scale.y);
-			if (area.y + area.h < drawPos.y + drawPos.h)
+			else if (text[i] == '\t')
 			{
-				return { false,i,drawPos };
+				drawPos.x += drawPos.w * 4;
 			}
-			continue;
-		}
-		else if (text[i] == '\t')
-		{
-			drawPos.x += drawPos.w * 4;
-		}
-		else if (text[i] == ' ')
-		{
-			drawPos.x += drawPos.w;
-			continue;
-		}
-		if (!sMonspace)
-		{
-			drawPos.w = (int)(font.customWidth[sLookupTable[text[i]]] * scale.x);
-			tex.rect.w = font.customWidth[sLookupTable[text[i]]];
-		}
-		if (area.x + area.w < drawPos.x + drawPos.w)
-		{
-			if (breakOnnewLine)
+			else if (text[i] == ' ')
 			{
-				return { false,i,drawPos };
+				drawPos.x += drawPos.w;
+				continue;
 			}
-			drawPos.x = area.x;
-			drawPos.y += drawPos.h + (int)(font.yOffset * scale.y);
-			if (area.y + area.h < drawPos.y + drawPos.h)
+			if (!sMonspace)
 			{
-				return { false,i,drawPos};
+				drawPos.w = (int)(font.customWidth[sLookupTable[text[i]]] * scale.x);
+				tex.rect.w = font.customWidth[sLookupTable[text[i]]];
 			}
+			if (area.x + area.w < drawPos.x + drawPos.w)
+			{
+				if (breakOnnewLine)
+				{
+					return { false,i,drawPos };
+				}
+				drawPos.x = area.x;
+				drawPos.y += drawPos.h + (int)(font.yOffset * scale.y);
+				if (area.y + area.h < drawPos.y + drawPos.h)
+				{
+					return { false,i,drawPos };
+				}
+			}
+
+			Renderer::DrawTexture(tex, drawPos);
+
+			drawPos.x += drawPos.w + (int)(font.xOffset * scale.x);
+
 		}
 
-		Renderer::DrawTexture(tex, drawPos);
-
-		drawPos.x += drawPos.w + (int)(font.xOffset * scale.x);
-
+		tex.SetTint(WHITE);
+		return { true,(int)(text.size() - 1),drawPos };
 	}
-
-	tex.SetTint(WHITE);
-	return {true,(int)(text.size()-1),drawPos};
+	catch (std::exception& e)
+	{
+		LOG_PUSH(e.what());
+		SDL_assert(false);
+		return { false, 0, SDL_Rect(0,0,0,0) };
+	}
 }
 
 SDL_Point ui::FontWriter::GetCharSpacing()
@@ -107,12 +124,27 @@ SDL_Point ui::FontWriter::GetCharSpacing()
 	return { font.xOffset,font.yOffset };
 }
 
+SDL_FPoint ui::FontWriter::GetStrSize(const std::string& text, SDL_FPoint scale)
+{
+	int x = 0;
+	int y = GetSize().y + GetCharSpacing().y;
+	int spaceX = GetCharSpacing().x;
+	for (int i = 0; i < text.size(); i++)
+	{
+		x += (GetSize(text[i]).x + spaceX);
+	}
+	return SDL_FPoint(x*scale.x,y*scale.y);
+}
+
 bool ui::FontWriter::SetFont(int id)
 {
-	if (id < sFonts.size() && id >= 0)
+	for (auto& font : sFonts)
 	{
-		sSelected = id;
-		return true;
+		if (font.fontType == id)
+		{
+			sSelected = id;
+			return true;
+		}
 	}
 	return false;
 }

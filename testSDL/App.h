@@ -50,9 +50,10 @@ public:
 			auto& cam = mScene.GetCamera();
 			cam.SetScale({ 4.0f,4.0f });
 
-			std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8);
+			std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8,1000/8.0f,8,8);
 			p->AddActionController(std::make_shared<PlayerController>());
 			p->SetStats(StatPack(1, 1, 30.0f));
+			p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
 			if (mScene.InsertEntity(p))
 			{
 				DB_OUT("inserted");

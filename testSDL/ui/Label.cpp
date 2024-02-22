@@ -27,12 +27,7 @@ void ui::Label::Draw()
 	int tempFontId = FontWriter::GetFont();
 	if (mFontId != -1)
 		FontWriter::SetFont(mFontId);
-	float textWidth = 0;
-	for (int i = 0; i < mText.size(); i++)
-	{
-		textWidth += FontWriter::GetSize(mText[i]).x;
-	}
-	textWidth *= mTextScale.x;
+	float textWidth = FontWriter::GetStrSize(mText,mTextScale).x;
 
 	auto innerArea = GetInnerArea();
 

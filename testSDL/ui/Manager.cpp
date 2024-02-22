@@ -268,7 +268,7 @@ void ui::Manager::Init()
 				(new ui::Select(itemDiv, Area, "editorEntityItemSelect", 6))
 					->AddOption("todo")
 					
-					->SetBorder({2,2,2,2}); // hier
+					->SetBorder({2,2,2,2});
 
 				Area.y += Area.h;
 

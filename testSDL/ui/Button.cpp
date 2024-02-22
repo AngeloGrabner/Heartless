@@ -30,7 +30,7 @@ namespace ui
 	{
 		if (!mActive)
 			return;
-		Widget::Update();
+		Label::Update();
 		UpdateChildrin();
 		if (mClicked)
 		{

@@ -6,7 +6,13 @@
 
 using Milliseconds = Uint64;
 using Millis = Milliseconds;
+//float seconds to ms
+constexpr Millis FtoMS(float count)
+{
+	return (1000 / count);
+}
 
+//ms to float sconds
 constexpr float MStoF(Milliseconds ms)
 {
 	return float(ms / 1000.0);
@@ -42,7 +48,8 @@ public:
 	Duration() = default;
 	Duration(Milliseconds threshhold);
 	bool Update(); // true if ellepsed time <= threshold
-	bool Get();
+	bool Get() const;
+	Millis GetTreshold() const;
 	void Reset();
 	void SetTime(Milliseconds ms);
 	void SetThreshold(Milliseconds ms);

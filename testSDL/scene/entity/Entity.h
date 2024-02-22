@@ -65,11 +65,16 @@ public:
 	const SDL_FRect GetHitBox() const;
 	SDL_FRect& HitBox();
 
-	void SetStats(const StatPack& stats);
+	Entity* SetStats(const StatPack& stats);
 	StatPack GetStats() const;
 
 	bool GetFlag(Flags f) const;
-	void SetFlag(Flags f, bool value);
+	Entity* SetFlag(Flags f, bool value);
+
+	Entity* SetAnimation(std::unique_ptr<Animation> ani); // no getter so far needed
+	
+	Entity* SetDrawBox(SDL_FRect offsetbox);
+	SDL_FRect GetDrawBox() const;
 };
 
 SDL_FRect Collide(SDL_FRect Pos);

@@ -1,4 +1,5 @@
 #include "Event.h"
+#include "Utility.h"
 
 std::unordered_map<Event::Type, Uint32> Event::sMap;
 
@@ -28,7 +29,7 @@ Uint32 Event::GetEventType(Event::Type Id)
 #define DO_EVENT(x) SDL_Event e;\
                 SDL_zero(e); \
                 e.type = Event::GetEventType((x))
-#define PUSH SDL_PushEvent(&e)
+#define PUSH SDLCHECK(SDL_PushEvent(&e))
 
 void EventBuilder::Button(const std::string& name)
 {

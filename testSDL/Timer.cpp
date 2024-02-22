@@ -59,12 +59,17 @@ Duration::Duration(Milliseconds threshhold)
 bool Duration::Update()
 {
 	mTime += Timer::GetGlobalDT();
-	return mThreshold <= mTime;
+	return mThreshold >= mTime;
 }
 
-bool Duration::Get()
+bool Duration::Get() const
 {
-	return mThreshold <= mTime;
+	return mThreshold >= mTime;
+}
+
+Millis Duration::GetTreshold() const
+{
+	return mThreshold;
 }
 
 void Duration::Reset()

@@ -71,7 +71,7 @@ void Entity::DebugDraw()
 {
 	Renderer::SetColor(RED);
 	Renderer::DrawRect(mHitBox);
-	Renderer::SetColor(BLUE);
+	Renderer::SetColor(GREEN);
 	Renderer::DrawRect(AbsDrawBox());
 }
 
@@ -95,9 +95,10 @@ SDL_FRect& Entity::HitBox()
 	return mHitBox;
 }
 
-void Entity::SetStats(const StatPack& stats)
+Entity* Entity::SetStats(const StatPack& stats)
 {
 	mStats = stats;
+	return this;
 }
 
 StatPack Entity::GetStats() const
@@ -111,9 +112,27 @@ bool Entity::GetFlag(Flags f) const
 	return mFlags[f];
 }
 
-void Entity::SetFlag(Flags f, bool value)
+Entity* Entity::SetFlag(Flags f, bool value)
 {
 	mFlags[f] = value;
+	return this;
+}
+
+Entity* Entity::SetAnimation(std::unique_ptr<Animation> ani)
+{
+	mAni.swap(ani);
+	return this;
+}
+
+Entity* Entity::SetDrawBox(SDL_FRect offsetbox)
+{
+	mDrawBox = offsetbox;
+	return this;
+}
+
+SDL_FRect Entity::GetDrawBox() const
+{
+	return mDrawBox;
 }
 
 #include "../Scene.h"

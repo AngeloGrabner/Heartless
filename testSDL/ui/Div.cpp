@@ -15,7 +15,7 @@ void ui::Div::Update()
 {
 	if (!mActive)
 		return;
-	UpdateChildrin();
+	Widget::Update();
 }
 
 void ui::Div::Draw()

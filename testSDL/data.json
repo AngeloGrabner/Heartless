@@ -26,10 +26,10 @@
                                 "value0": {
                                     "value0": {
                                         "drawbox": {
-                                            "x": 0.0,
-                                            "y": 0.0,
-                                            "w": 0.0,
-                                            "h": 0.0
+                                            "x": -2.0,
+                                            "y": -2.0,
+                                            "w": 4.0,
+                                            "h": 4.0
                                         },
                                         "hitbox": {
                                             "x": 48.0,
@@ -51,10 +51,27 @@
                                             "type": 0,
                                             "data": 1
                                         },
-                                        "texId": 8,
+                                        "texId": -1,
                                         "ani": {
                                             "ptr_wrapper": {
-                                                "valid": 0
+                                                "valid": 1,
+                                                "data": {
+                                                    "value0": true,
+                                                    "value1": 8,
+                                                    "value2": {
+                                                        "x": 0,
+                                                        "y": 0,
+                                                        "w": 0,
+                                                        "h": 0
+                                                    },
+                                                    "value3": {
+                                                        "x": 8,
+                                                        "y": 8
+                                                    },
+                                                    "value4": {
+                                                        "value0": 125
+                                                    }
+                                                }
                                             }
                                         }
                                     },

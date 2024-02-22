@@ -31,13 +31,16 @@ public:
 	bool IsInited() const;
 	Texture Get() const;
 	int GetTextureId() const;
+	Millis GetFrameTime() const;
 	void NextFrame();
 	void NextAnimation();
-	void Update();
+	void Update ();
 	void ResetFrame();
 	void ResetAnimation();
 	void SetAnimation(size_t animationId);
 	void SetFrame(size_t frame);
+	void SetFrameTime(Millis frametime);
+
 
 	template<class Archive>
 	void save(Archive& ar) const;

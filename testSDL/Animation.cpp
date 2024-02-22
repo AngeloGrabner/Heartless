@@ -21,6 +21,11 @@ int Animation::GetTextureId() const
 	return mTexId;
 }
 
+Millis Animation::GetFrameTime() const
+{
+	return mDur.GetTreshold();
+}
+
 void Animation::NextFrame()
 {
 	mIndex.x++;
@@ -38,13 +43,18 @@ void Animation::Update()
 	if (!mDur.Update())
 	{
 		NextFrame();
-		//get texture every frame cause it might have been deallocated in between frames
-		//migth remove deallocation of texture managers texutres
-		mRetMe = TextureManager::Get(mTexId);
-
-		mRetMe.rect.x = mRetMe.rect.x + mRetMe.rect.w / mSteps.x * mIndex.x;
-		mRetMe.rect.y = mRetMe.rect.y + mRetMe.rect.h / mSteps.y * mIndex.y;
+		
+		mDur.Reset();
 	}
+	
+	//get texture every frame cause it might have been deallocated in between frames
+	//migth remove deallocation of texture managers texutres
+	mRetMe = TextureManager::Get(mTexId);
+
+	mRetMe.rect.x += mRetMe.rect.w / mSteps.x * mIndex.x;
+	mRetMe.rect.y += mRetMe.rect.h / mSteps.y * mIndex.y;
+	mRetMe.rect.w /= mSteps.x;
+	mRetMe.rect.h /= mSteps.y;
 }
 
 void Animation::ResetFrame()
@@ -68,4 +78,9 @@ void Animation::SetFrame(size_t frame)
 {
 	mIndex.x = frame;
 	mIndex.x %= mSteps.x;
+}
+
+void Animation::SetFrameTime(Millis frametime)
+{
+	mDur.SetThreshold(frametime);
 }

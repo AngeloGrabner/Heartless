@@ -677,6 +677,13 @@ void Editor::Draw(Scene* scene)
 		SDL_assert(false);
 		break;
 	}
+	if (Input::GetKey(SDLK_SPACE, Input::EDITOR).DownOrHold())
+	{
+		scene->mTM.DebugDraw(area);
+		auto entt = scene->mDQT->Search(area);
+		for (auto& en : entt)
+			en.data->item->DebugDraw();
+	}
 	if (mSelecting || !mSelectedEntities.empty() || !mSelectedTiles.empty())
 	{
 		Renderer::SetColor(WHITE);
