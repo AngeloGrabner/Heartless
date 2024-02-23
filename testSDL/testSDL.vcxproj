@@ -169,6 +169,7 @@
     <ClCompile Include="scene\Camera.cpp" />
     <ClCompile Include="scene\entity\controller\ActionController.cpp" />
     <ClCompile Include="scene\entity\Controller\PlayerController.cpp" />
+    <ClCompile Include="scene\entity\controller\SimpleEnemyController.cpp" />
     <ClCompile Include="scene\entity\Creature.cpp" />
     <ClCompile Include="scene\entity\Entity.cpp" />
     <ClCompile Include="scene\entity\item\Inventory.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="scene\Camera.h" />
     <ClInclude Include="scene\entity\controller\ActionController.h" />
     <ClInclude Include="scene\entity\controller\PlayerController.h" />
+    <ClInclude Include="scene\entity\controller\SimpleEnemyController.h" />
     <ClInclude Include="scene\entity\Creature.h" />
     <ClInclude Include="scene\entity\Entity.h" />
     <ClInclude Include="scene\entity\item\Inventory.h" />

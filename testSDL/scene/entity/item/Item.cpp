@@ -12,8 +12,7 @@ Item::Item(std::unique_ptr<Animation>&& ani, const std::string& name, int maxCou
 
 bool Item::Comp(const Item& other)
 {
-    if (this->Type == other.Type &&
-        mTexId == other.mTexId && 
+    if (mTexId == other.mTexId && 
         mAni == other.mAni &&
         mName == other.mName &&
         mDiscription == other.mDiscription)

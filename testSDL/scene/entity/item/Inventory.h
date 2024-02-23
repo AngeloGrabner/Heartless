@@ -1,5 +1,6 @@
 #pragma once
 #include "Item.h"
+#include <cereal/types/vector.hpp>
 
 class Inventory
 {
@@ -24,4 +25,8 @@ public:
 	//use Drop() if you want to store the ptr
 	Item* At(size_t idx);
 
+	template<class Archive>
+	void save(Archive& ar) const;
+	template<class Archive>
+	void load(Archive& ar) const;
 };

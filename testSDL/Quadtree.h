@@ -5,6 +5,7 @@
 #include <array>
 #include "Utility.h"
 #include <type_traits>
+
 #include <cereal/cereal.hpp>
 
 template<typename T, RECT Rect>
@@ -36,10 +37,7 @@ private:
 
 public:
 
-	Quadtree()
-	{
-
-	}
+	Quadtree() = default;
 	Quadtree(Rect size, int maxDepth,int depth = 0)
 	{
 		float hh = size.h / 2.0f, hw = size.w/2.0f;
@@ -258,6 +256,21 @@ public:
 	{
 		return mMaxDepth;
 	}
+
+	void PrintTree(int idx = 0)
+	{
+		for (int i = 0; i < mDepth; i++)
+		{
+			std::cout << "   ";
+		}
+		std::cout << "idx: " << idx << " depth: " << mDepth << " size: " << mData.size() << std::endl;
+	
+		for (int i = 0; i < 4; i++)
+		{
+			if (mChilds[i])
+				mChilds[i]->PrintTree(i);
+		}
+	}
 };
 
 
@@ -279,13 +292,14 @@ public:
 	
 private:
 	std::array<QTI, MAX_SIZE> mData;
-	ITER mFreeSpace = mData.begin();
+	ITER mFreeSpace; 
 	Quadtree<ITER, Rect> mQt;
 public:
 	DynamicQuadTree() = default;
 	DynamicQuadTree(Rect size, int maxDepth, int depth = 0)
 	{
 		mQt = Quadtree<ITER, Rect>(size, maxDepth, depth);
+		mFreeSpace = mData.begin();
 	}
 	bool Insert(T item, Rect area)
 	{
@@ -343,6 +357,10 @@ public:
 		(*item).ptr.leafList->erase((*item).ptr.itemIter);
 		(*item).ptr = mQt.Insert(item, area);
 	}
+	void PrintTree()
+	{
+		mQt.PrintTree(0);
+	}
 	std::array<QTI, MAX_SIZE>::iterator begin()
 	{
 		return mData.begin();
@@ -396,5 +414,7 @@ public:
 			ar(item);
 			Insert(item, item->GetHitBox());
 		}
+
+		mFreeSpace = mData.begin();
 	}
 };

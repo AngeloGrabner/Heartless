@@ -4,6 +4,8 @@
 #include <cereal/types/base_class.hpp>
 #include "../../../sdl_type_serializer.h"
 
+class Entity;
+
 //todo: make to thread safe
 class ActionController
 {
@@ -14,7 +16,7 @@ protected:
 public:
 	ActionController() = default;
 
-	virtual void Update() = 0;
+	virtual void Update(Entity* owner) = 0;
 	SDL_FPoint GetDir();
 	bool UseItem(int& index);
 

@@ -2,7 +2,7 @@
 #include "../../../Input.h"
 
 //todo use settings for muvement keys
-void PlayerController::Update()
+void PlayerController::Update(Entity* owner)
 {
 	if (Input::GetKey(SDLK_w,Input::GAME).DownOrHold())
 	{

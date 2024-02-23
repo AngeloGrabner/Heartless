@@ -7,14 +7,10 @@
 #include <cereal/types/polymorphic.hpp>
 #include <cereal/types/base_class.hpp>
 
-#define ITEM_TYPE static constexpr size_t Type = __COUNTER__
-
 class Entity;
 
 class Item
 {
-public:
-	ITEM_TYPE;
 protected:
 	int mTexId = -1;
 	int mCount = -1;

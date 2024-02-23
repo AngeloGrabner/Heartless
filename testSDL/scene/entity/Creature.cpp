@@ -23,7 +23,7 @@ bool Creature::Update()
 		mAni->Update();
 	if (mController)
 	{
-		mController->Update();
+		mController->Update(this);
 		auto dirCache = mDir;
 		mDir = mController->GetDir();
 

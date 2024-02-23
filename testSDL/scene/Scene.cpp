@@ -22,7 +22,7 @@ Scene::Scene(SDL_Point WorldSize)
 			else 
 				mTM.Set(x, y, std::make_shared<Tile>(11)); // hier
 		}
-	mDQT = std::make_shared<DQTE>(SDL_FRect{0.0f,0.0f,(float)mWorldSize.x,(float)mWorldSize.y},8);
+	mDQT = std::make_shared<DQTE>(SDL_FRect{0.0f,0.0f,(float)mWorldSize.x * TILE_SIZE,(float)mWorldSize.y * TILE_SIZE },8);
 }
 
 Scene::Scene(Scene&& other) noexcept
@@ -159,9 +159,10 @@ const std::shared_ptr<Player> Scene::GetPlayer() const
 	{
 		for (auto it = mDQT->begin(); it != mDQT->end(); it++)
 		{
-			if (it->item->Type == Player::Type)
+			auto ptr = std::dynamic_pointer_cast<Player>(it->item);
+			if (ptr)
 			{
-				mPlayer = std::dynamic_pointer_cast<Player>(it->item);
+				mPlayer = ptr;
 				return mPlayer;
 			}
 		}
@@ -200,9 +201,10 @@ std::shared_ptr<Player> Scene::GetPlayer()
 	{
 		for (auto it = mDQT->begin(); it != mDQT->end(); it++)
 		{
-			if (it->item->Type == Player::Type)
+			auto ptr = std::dynamic_pointer_cast<Player>(it->item);
+			if (ptr)
 			{
-				mPlayer = std::static_pointer_cast<Player>(it->item);
+				mPlayer = ptr;
 				return mPlayer;
 			}
 		}
@@ -212,7 +214,7 @@ std::shared_ptr<Player> Scene::GetPlayer()
 
 		return nullptr;
 	}
-		
+
 	return mPlayer;
 }
 
@@ -220,7 +222,7 @@ bool Scene::InsertEntity(std::shared_ptr<Entity> e)
 {
 	if (e)
 	{
-		return mDQT->Insert(e, e->GetHitBox());
+		return mDQT->Insert(e, e->AbsDrawBox());
 	}
 	return false;
 }

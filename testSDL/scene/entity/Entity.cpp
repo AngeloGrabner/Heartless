@@ -59,6 +59,7 @@ void Entity::Draw()
 	if (mAni)
 	{
 		tex = mAni->Get();
+		SDL_assert(tex.tex);
 	}
 	else
 	{
@@ -85,7 +86,7 @@ SDL_FRect Entity::AbsDrawBox() const
 	};
 }
 
-const SDL_FRect Entity::GetHitBox() const
+SDL_FRect Entity::GetHitBox() const
 {
 	return mHitBox;
 }

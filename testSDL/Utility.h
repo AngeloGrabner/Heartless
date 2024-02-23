@@ -31,7 +31,7 @@ inline std::mutex logerMut;
 	logerMut.unlock()
 
 #ifdef _DEBUG
-	#define SDLCHECK(returnVal) if ((returnVal) < 0) {std::cout << "SDL error: " << SDL_GetError() << LOG_STR(" at") <<'\n';} //else {std::cout << "Success " << LOG(" at") << '\n';}
+	#define SDLCHECK(returnVal) if ((returnVal) < 0) {std::cout << "SDL error: " << SDL_GetError() << LOG_STR(" at") <<'\n'; SDL_assert(false);} //else {std::cout << "Success " << LOG(" at") << '\n';}
 #else
 	#define SDLCHECK(returnVal) (returnVal)
 #endif
@@ -105,3 +105,37 @@ inline RectOut cast(RectIn rect)
 {
 	return RectOut(std::round(rect.x), std::round(rect.y), std::round(rect.w), std::round(rect.h));
 }
+
+template<POINT Point,RECT Rect>
+constexpr Point mid(Rect rect)
+{
+	return Point(rect.x + rect.w / 2.0f, rect.y + rect.h / 2.0f);
+}
+
+template<POINT Ponit>
+constexpr Ponit norm(Ponit p)
+{
+	float len = std::sqrtf(p.x * p.x + p.y * p.y);
+	p.x /= len;
+	p.y /= len;
+	return p;
+}
+
+inline int random(int max, int min = 0)
+{
+	return rand() % (max - min) + min;
+}
+
+inline float randomF(float max, float min = 0.0f)
+{
+	return rand() / (float)RAND_MAX * (max - min) + min;
+}
+
+inline long long randomLL(long long max, long long min = 0)
+{
+	long long ret = rand();
+	ret << sizeof(int) * 8;
+	ret |= rand();
+	return ret % (max - min) + min;
+}
+

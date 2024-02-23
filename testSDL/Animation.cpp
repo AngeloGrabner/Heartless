@@ -50,11 +50,13 @@ void Animation::Update()
 	//get texture every frame cause it might have been deallocated in between frames
 	//migth remove deallocation of texture managers texutres
 	mRetMe = TextureManager::Get(mTexId);
-
+	
 	mRetMe.rect.x += mRetMe.rect.w / mSteps.x * mIndex.x;
 	mRetMe.rect.y += mRetMe.rect.h / mSteps.y * mIndex.y;
 	mRetMe.rect.w /= mSteps.x;
 	mRetMe.rect.h /= mSteps.y;
+	
+	SDL_assert(mRetMe.tex);
 }
 
 void Animation::ResetFrame()

@@ -8,7 +8,6 @@ protected:
 	std::shared_ptr<ActionController> mController;
 	//inventory
 public:
-	ENTITY_TYPE;
 	//just for cereal to construct
 	Creature() = default;
 	Creature(SDL_FRect hitbox, int textureId = -1, SDL_FRect drawBoxOffset = { 0,0,0,0 });

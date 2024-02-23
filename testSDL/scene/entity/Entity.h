@@ -11,7 +11,6 @@
 #include <cereal/types/polymorphic.hpp>
 #include <cereal/types/base_class.hpp>
 
-#define ENTITY_TYPE static constexpr size_t Type = __COUNTER__
 
 class Entity
 {
@@ -25,7 +24,6 @@ public:
 
 		LAST_INTERNAL //just for counting the members of Flags
 	};
-	ENTITY_TYPE;
 	static constexpr size_t InvalidId = 0;
 protected:
 	//relative to hitbox
@@ -62,7 +60,7 @@ public:
 	void load(Archive& ar);
 
 	SDL_FRect AbsDrawBox() const;
-	const SDL_FRect GetHitBox() const;
+	SDL_FRect GetHitBox() const;
 	SDL_FRect& HitBox();
 
 	Entity* SetStats(const StatPack& stats);

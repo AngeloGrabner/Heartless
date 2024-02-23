@@ -30,7 +30,7 @@ void TextureManager::Init(const std::string& pathToCSV)
 		}
 		catch (std::exception& e)
 		{
-			LOG_PUSH(e.what());
+			//LOG_PUSH(e.what());
 		}
 	}
 	std::sort(sData.begin(), sData.end(), [](InternBundle a, InternBundle b) -> bool {return a.id < b.id; });

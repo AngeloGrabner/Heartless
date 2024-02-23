@@ -7,6 +7,7 @@
 #include "ui/Manager.h"
 
 #include "scene/entity/controller/PlayerController.h"
+#include "scene/entity/controller/SimpleEnemyController.h"
 #include "scene/entity/Player.h"
 
 #include "cereal/archives/json.hpp"
@@ -34,12 +35,12 @@ public:
 		Input::Init();
 		Event::Init();
 		mUim.Init();
-
 		Window::SetIcon("../res/heart.bmp");
 
 		Renderer::SetScreenMode(false);
 		Renderer::SetVSync(Renderer::VSYNC_DISABLE);
 
+		srand((unsigned int)(SDL_GetTicks64() * (SHRT_MAX - 123)) + 3);
 	}
 	bool Init()
 	{
@@ -50,13 +51,25 @@ public:
 			auto& cam = mScene.GetCamera();
 			cam.SetScale({ 4.0f,4.0f });
 
-			std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8,1000/8.0f,8,8);
+			std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8, FtoMS(8.0f),8,8);
 			p->AddActionController(std::make_shared<PlayerController>());
 			p->SetStats(StatPack(1, 1, 30.0f));
 			p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
-			if (mScene.InsertEntity(p))
+			if (!mScene.InsertEntity(p))
 			{
-				DB_OUT("inserted");
+				SDL_assert(false);
+			}
+
+			for (int i = 0; i < 50; i++)
+			{
+				std::shared_ptr<Creature> p = std::make_shared<Creature>(SDL_FRect{ randomF(1600),randomF(1600),16,16}, 8, FtoMS(8.0f), 8, 8);
+				p->AddActionController(std::make_shared<SimpleEnemyController>());
+				p->SetStats(StatPack(1, 1, 20.0f));
+				p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
+				if (!mScene.InsertEntity(p))
+				{
+					SDL_assert(false);
+				}
 			}
 		}
 		else
@@ -75,6 +88,7 @@ public:
 			}
 		}
 		Scene::Set(&mScene);
+		mScene.GetEntities()->PrintTree();
 		Sound::WaitForLoad();
 		return true;
 	}
