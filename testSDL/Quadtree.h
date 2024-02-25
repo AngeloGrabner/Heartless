@@ -26,22 +26,22 @@ class Quadtree
 {
 public:
 
-	using Ib = Interbundle<T,Rect>;
+	using Ib = Interbundle<T, Rect>;
 
 private:
 	int mMaxDepth = -1;
 	int mDepth = 0;
 	std::list<Ib> mData;
-	Rect mChildsArea[4] = {Rect(0,0,0,0),Rect(0,0,0,0),Rect(0,0,0,0),Rect(0,0,0,0) };
+	Rect mChildsArea[4] = { Rect(0,0,0,0),Rect(0,0,0,0),Rect(0,0,0,0),Rect(0,0,0,0) };
 	std::unique_ptr<Quadtree> mChilds[4];
 
 public:
 
 	Quadtree() = default;
-	Quadtree(Rect size, int maxDepth,int depth = 0)
+	Quadtree(Rect size, int maxDepth, int depth = 0)
 	{
-		float hh = size.h / 2.0f, hw = size.w/2.0f;
-		mChildsArea[0] = { size.x, size.y, hw, hh};
+		float hh = size.h / 2.0f, hw = size.w / 2.0f;
+		mChildsArea[0] = { size.x, size.y, hw, hh };
 		mChildsArea[1] = { size.x + hw, size.y, hw, hh };
 		mChildsArea[2] = { size.x, size.y + hh,hw,hh };
 		mChildsArea[3] = { size.x + hw, size.y + hh, hw, hh };
@@ -149,7 +149,7 @@ private:
 		}
 	}
 public:
-	QuadTreeItemLocation<T,Rect> Insert(T item, Rect area)
+	QuadTreeItemLocation<T, Rect> Insert(T item, Rect area)
 	{
 		bool flag = false;
 		for (int i = 0; i < 4; i++)
@@ -160,14 +160,14 @@ public:
 				{
 					if (!mChilds[i])
 					{
-						mChilds[i] = std::make_unique<Quadtree<T, Rect>>(mChildsArea[i], mMaxDepth,mDepth + 1);
+						mChilds[i] = std::make_unique<Quadtree<T, Rect>>(mChildsArea[i], mMaxDepth, mDepth + 1);
 					}
 					return mChilds[i]->Insert(item, area);
 				}
 			}
 		}
 		mData.push_front({ item,area });
-		return { &mData,mData.begin()};
+		return { &mData,mData.begin() };
 	}
 	std::list<Ib> Search(Rect area)
 	{
@@ -200,7 +200,7 @@ public:
 		}
 	}
 	// removes the first element that is equal to item 
-	bool Remove(const T& item) 
+	bool Remove(const T& item)
 	{
 		for (auto it = mData.begin(); it != mData.end(); it++)
 		{
@@ -213,7 +213,7 @@ public:
 		bool flag = false;
 		for (int i = 0; i < 4; i++)
 		{
-			if (mChilds[i] && ! flag)
+			if (mChilds[i] && !flag)
 			{
 				flag |= mChilds[i]->Remove(item);
 			}
@@ -230,7 +230,7 @@ public:
 			}
 		}
 		for (int i = 0; i < 4; i++)
-		{				
+		{
 			if (mChilds[i])
 			{
 				if (contain<Rect>(area, mChildsArea[i]))
@@ -257,19 +257,57 @@ public:
 		return mMaxDepth;
 	}
 
-	void PrintTree(int idx = 0)
+	void PrintTree(int idx = 0) const
 	{
 		for (int i = 0; i < mDepth; i++)
 		{
 			std::cout << "   ";
 		}
 		std::cout << "idx: " << idx << " depth: " << mDepth << " size: " << mData.size() << std::endl;
-	
+
 		for (int i = 0; i < 4; i++)
 		{
 			if (mChilds[i])
 				mChilds[i]->PrintTree(i);
 		}
+	}
+
+	void GetAllRects(std::list<Rect>* data)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			if (mChilds[i])
+			{
+				data->push_back(mChildsArea[i]);
+				mChilds[i]->GetAllRects(data);
+			}
+		}
+	}
+
+	void GetRects(Rect area, std::list<Rect>* data) const
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			if (mChilds[i])
+			{
+				if (contain<Rect>(area, mChildsArea[i]))
+				{
+					data->push_back(mChildsArea[i]);
+					mChilds[i]->GetAllRects(data);
+				}
+				else if (overlape<Rect>(mChildsArea[i], area))
+				{
+					data->push_back(mChildsArea[i]);
+					mChilds[i]->GetRects(area, data);
+				}
+			}
+		}
+	}
+	std::list<Rect> GetRects(Rect area) const
+	{
+		std::list<Rect> list;
+		GetRects(area, &list);
+		return list;
 	}
 };
 
@@ -361,6 +399,11 @@ public:
 	{
 		mQt.PrintTree(0);
 	}
+	std::list<Rect> GetRects(Rect area) const
+	{
+		return mQt.GetRects(area);
+	}
+
 	std::array<QTI, MAX_SIZE>::iterator begin()
 	{
 		return mData.begin();

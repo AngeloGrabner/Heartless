@@ -96,7 +96,7 @@ public:
 	static void Set(Scene* instance);
 private:
 	void InternHandle(const SDL_Event* e);
-
+	void DebugDrawQt();
 };
 
 template<class Archive>

@@ -29,7 +29,7 @@ public:
 		unsigned int frameCount, unsigned int animationCount = 1);
 
 	bool IsInited() const;
-	Texture Get() const;
+	Texture Get();
 	int GetTextureId() const;
 	Millis GetFrameTime() const;
 	void NextFrame();

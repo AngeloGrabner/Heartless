@@ -53,14 +53,14 @@ public:
 
 			std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8, FtoMS(8.0f),8,8);
 			p->AddActionController(std::make_shared<PlayerController>());
-			p->SetStats(StatPack(1, 1, 30.0f));
+			p->SetStats(StatPack(1, 1, 200.0f));
 			p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
 			if (!mScene.InsertEntity(p))
 			{
 				SDL_assert(false);
 			}
 
-			for (int i = 0; i < 50; i++)
+			for (int i = 0; i < 200; i++)
 			{
 				std::shared_ptr<Creature> p = std::make_shared<Creature>(SDL_FRect{ randomF(1600),randomF(1600),16,16}, 8, FtoMS(8.0f), 8, 8);
 				p->AddActionController(std::make_shared<SimpleEnemyController>());
@@ -88,7 +88,6 @@ public:
 			}
 		}
 		Scene::Set(&mScene);
-		mScene.GetEntities()->PrintTree();
 		Sound::WaitForLoad();
 		return true;
 	}

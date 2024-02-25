@@ -111,6 +111,8 @@ void Scene::Draw()
 		en.data->item->Draw();
 	}
 	mTM.DrawOnTop(area);
+	
+	//DebugDrawQt();
 }
 
 void Scene::DebugDraw()
@@ -124,6 +126,7 @@ void Scene::DebugDraw()
 	}
 	Renderer::SetColor(CYAN);
 	Renderer::DrawRect(mCam.GetRect());
+	DebugDrawQt();
 }
 
 const Camera& Scene::GetCamera() const
@@ -252,6 +255,17 @@ void Scene::InternHandle(const SDL_Event* e)
 		{
 			mEditing = checked;
 		}
+	}
+}
+
+void Scene::DebugDrawQt()
+{
+	Renderer::SetColor(YELLOW);
+
+	std::list<SDL_FRect> rects = mDQT->GetRects(mCam.GetRect());
+	for (auto r : rects)
+	{
+		Renderer::DrawRect(r);
 	}
 }
 
@@ -685,6 +699,7 @@ void Editor::Draw(Scene* scene)
 		auto entt = scene->mDQT->Search(area);
 		for (auto& en : entt)
 			en.data->item->DebugDraw();
+		scene->DebugDrawQt();
 	}
 	if (mSelecting || !mSelectedEntities.empty() || !mSelectedTiles.empty())
 	{

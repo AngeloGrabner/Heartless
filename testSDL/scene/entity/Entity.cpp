@@ -1,6 +1,8 @@
 #include "Entity.h"
 #include "../../Renderer.h"
 
+#include "../Scene.h"
+
 size_t Entity::sIdCounter = Entity::InvalidId;
 
 Entity::Entity(SDL_FRect hitbox, int textureId, SDL_FRect drawBoxOffset)
@@ -59,6 +61,8 @@ void Entity::Draw()
 	if (mAni)
 	{
 		tex = mAni->Get();
+		if (!tex.tex)
+			Scene::Get()->GetEntities()->PrintTree();
 		SDL_assert(tex.tex);
 	}
 	else

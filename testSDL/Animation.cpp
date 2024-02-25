@@ -11,8 +11,10 @@ bool Animation::IsInited() const
 	return mInited;
 }
 
-Texture Animation::Get() const
+Texture Animation::Get()
 {
+	if (!mRetMe.tex)
+		Update();
 	return mRetMe;
 }
 
