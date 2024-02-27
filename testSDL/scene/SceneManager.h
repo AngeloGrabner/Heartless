@@ -9,23 +9,29 @@
 class SceneManager
 {
 	static bool sLoadErroFlag;
-	static std::atomic_bool sLoadFinishedFlag;
+	static std::atomic_int sLoadStatusFlag;
 	static std::string sPath;
 	static std::string sWorldName;
 	static std::string sFileType;
-	static std::string sInitLoadSceneName;
 	static Scene* sSwapScene;
 public:
-	static bool Init(const std::string& worldName);
 	static void Handle(const SDL_Event* e);
-	static bool LoadWorldMetaData();
+	//loads the last loaded scene in the world
+	static bool LoadWorld(const std::string& name);
+	static bool UnloadWorld();
+
 	static void LoadScene(const std::string& sceneName);
-	static void UnloadScene(bool sctiveScene = false);
-	static void DoWhenSceneReady();
+	static void UnloadScene(bool activeScene = false);
+
+	static void WaitForLoad();
+	static void WaitForUnload();
+
+	static bool DoWhenSceneReady();
+
 	static void CreateWorld(const std::string& name);
 	static void CreateScene(const std::string& name, SDL_Point worldSizeInTiles);
 
 private:
 	static void InternLoad(const std::string& sceneName);
-	static void InternUnload();
+	static void InternUnload(const std::string& worldName);
 };

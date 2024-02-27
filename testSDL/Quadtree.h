@@ -452,12 +452,13 @@ public:
 
 		mQt = Quadtree<ITER, Rect>(r, maxDepth);
 		T item;
+		mFreeSpace = mData.begin();
 		for (int i = 0; i < itemCounter; i++)
 		{
 			ar(item);
 			Insert(item, item->GetHitBox());
 		}
 
-		mFreeSpace = mData.begin();
+		
 	}
 };

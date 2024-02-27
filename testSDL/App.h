@@ -3,13 +3,18 @@
 #include "Renderer.h"
 #include "Window.h"
 #include "Sound.h"
-#include "scene/Scene.h"
+#include "scene/SceneManager.h"
 #include "ui/Manager.h"
 
 #include "scene/entity/controller/PlayerController.h"
 #include "scene/entity/controller/SimpleEnemyController.h"
 #include "scene/entity/Player.h"
 
+
+#include "cereal/archives/json.hpp"
+#include <fstream>
+
+#define USE_SCENEMANAGER 
 
 class App
 {
@@ -31,6 +36,7 @@ public:
 		Input::Init();
 		Event::Init();
 		mUim.Init();
+		
 		Window::SetIcon("../res/heart.bmp");
 
 		Renderer::SetScreenMode(false);
@@ -40,66 +46,65 @@ public:
 	}
 	bool Init()
 	{
-		Scene* scene = nullptr;
-		if (true)
-		{	
-			scene = new Scene({ 100,100 });
-	
-			auto& cam = scene->GetCamera();
-			cam.SetScale({ 4.0f,4.0f });
-
-			std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8, FtoMS(8.0f),8,8);
-			p->AddActionController(std::make_shared<PlayerController>());
-			p->SetStats(StatPack(1, 1, 200.0f));
-			p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
-			if (!scene->InsertEntity(p))
+#ifndef  USE_SCENEMANAGER 
+			if (true)
 			{
-				SDL_assert(false);
-			}
+				Scene* scene = new Scene({ 100,100 });
+				auto& cam = scene->GetCamera();
+				cam.SetScale({ 4.0f,4.0f });
 
-			for (int i = 0; i < 200; i++)
-			{
-				std::shared_ptr<Creature> p = std::make_shared<Creature>(SDL_FRect{ randomF(1600),randomF(1600),16,16}, 8, FtoMS(8.0f), 8, 8);
-				p->AddActionController(std::make_shared<SimpleEnemyController>());
-				p->SetStats(StatPack(1, 1, 20.0f));
+				std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8, FtoMS(8.0f), 8, 8);
+				p->AddActionController(std::make_shared<PlayerController>());
+				p->SetStats(StatPack(1, 1, 200.0f));
 				p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
 				if (!scene->InsertEntity(p))
 				{
 					SDL_assert(false);
 				}
+
+				for (int i = 0; i < 200; i++)
+				{
+					std::shared_ptr<Creature> p = std::make_shared<Creature>(SDL_FRect{ randomF(1600),randomF(1600),16,16 }, 8, FtoMS(8.0f), 8, 8);
+					p->AddActionController(std::make_shared<SimpleEnemyController>());
+					p->SetStats(StatPack(1, 1, 20.0f));
+					p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
+					if (!scene->InsertEntity(p))
+					{
+						SDL_assert(false);
+					}
+				}
+				Scene::Set(scene);
 			}
-		}
-		else
-		{
-			try
+			else
 			{
-				std::ifstream ofs("data.json");
-				cereal::JSONInputArchive arr(ofs);
-				arr(*scene);
+				std::ifstream ifs("../res/saves/world1/data.json");
+				cereal::JSONInputArchive arr(ifs);
+				Scene* temp = new Scene();
+				arr(*temp);
+				Scene::Set(temp);
 			}
-			catch (std::exception& e)
-			{
-				LOG_PUSH(e.what());
-				std::cout << e.what();
-				return false;
-			}
-		}
-		Scene::Set(scene);
+#else
+		SceneManager::LoadWorld("world1");
+		SceneManager::WaitForLoad();
+#endif 
 		Sound::WaitForLoad();
+
 		return true;
 	}
 	void Run() 
 	{
-		
+		SDL_Event e;
 		while (mRunning)
 		{
 			mTimer.Start();
-			Input::Update();
 
-			SDL_Event e;
+			Input::Update();
+			SceneManager::DoWhenSceneReady();
+
 			while (SDL_PollEvent(&e))
 			{
 				Input::EventHandler(&e);
+				SceneManager::Handle(&e);
 				Scene::GetMut()->Handle(&e);
 				mUim.Handle(&e);
 				if  (e.type == SDL_QUIT)
@@ -132,11 +137,20 @@ public:
 	}
 	~App()
 	{
-
-		LOG_PRINT;
+#ifndef USE_SCENEMANAGER
+		std::ofstream ofs("../res/saves/world1/data.json");
+		cereal::JSONOutputArchive arr(ofs);
+		
+		arr(*Scene::GetMut());
+		delete Scene::GetMut();
+		Scene::Set(nullptr);
+#else
+		SceneManager::UnloadWorld();
+		SceneManager::WaitForUnload();
+#endif 
 		Renderer::Free();
 		Window::Free();
+		LOG_PRINT;
 		SDL_Quit();
-		delete Scene::GetMut();
 	}
 };

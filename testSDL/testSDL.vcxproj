@@ -178,7 +178,7 @@
     <ClCompile Include="scene\entity\StatPack.cpp" />
     <ClCompile Include="scene\entity\StatPack.h" />
     <ClCompile Include="scene\Scene.cpp" />
-    <ClCompile Include="scene\SceneLoader.cpp" />
+    <ClCompile Include="scene\SceneManager.cpp" />
     <ClCompile Include="scene\tilemap\Tile.cpp" />
     <ClCompile Include="scene\tilemap\Tilemap.cpp" />
     <ClCompile Include="Settings.cpp" />
@@ -220,7 +220,7 @@
     <ClInclude Include="scene\entity\item\Item.h" />
     <ClInclude Include="scene\entity\Player.h" />
     <ClInclude Include="scene\Scene.h" />
-    <ClInclude Include="scene\SceneLoader.h" />
+    <ClInclude Include="scene\SceneManager.h" />
     <ClInclude Include="scene\tilemap\Tile.h" />
     <ClInclude Include="scene\tilemap\Tilemap.h" />
     <ClInclude Include="sdl_type_serializer.h" />

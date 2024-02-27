@@ -135,7 +135,7 @@
     <ClCompile Include="scene\entity\controller\SimpleEnemyController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="scene\SceneLoader.cpp">
+    <ClCompile Include="scene\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -260,7 +260,7 @@
     <ClInclude Include="scene\entity\controller\SimpleEnemyController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="scene\SceneLoader.h">
+    <ClInclude Include="scene\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
