@@ -102,6 +102,28 @@ void EventBuilder::ReTextBox(const std::string& name, const std::string& text)
     PUSH;
 }
 
+void EventBuilder::SettingsChanged()
+{
+    DO_EVENT(Event::SETTINGS_EVENT);
+    e.user.code = 0;
+    PUSH;
+}
+
+void EventBuilder::StartSceneChange(const std::string& sceneName)
+{
+    DO_EVENT(Event::SCENE_EVENT);
+    e.user.code = 0;
+    e.user.data1 = new std::string(sceneName);
+    PUSH;
+}
+
+void EventBuilder::FinishedSceneChange()
+{
+    DO_EVENT(Event::SCENE_EVENT);
+    e.user.code = 1;
+    PUSH;
+}
+
 
 void EventBuilder::PlayerDied(size_t id)
 {
@@ -204,58 +226,92 @@ bool EventReceiver::ReTextBox(const SDL_Event* e,  std::string& name,  std::stri
     return false;
 }
 
+bool EventReceiver::SettingsChanged(const SDL_Event* e)
+{
+    IF(Event::SETTINGS_EVENT, 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool EventReceiver::StartSceneChange(const SDL_Event* e, std::string& sceneName)
+{
+    IF(Event::SCENE_EVENT, 0)
+    {
+        sceneName = *(std::string*)(e->user.data1);
+        return true;
+    }
+    return false;
+}
+
+bool EventReceiver::FinishedSceneChange(const SDL_Event* e)
+{
+    IF(Event::SCENE_EVENT, 1)
+    {
+        return true;
+    }
+    return false;
+}
+
 
 
 void UserEventDeallocator(SDL_Event* e)
 {
-    bool flag = false;
+    bool flag = true;
     IF(Event::UI_EVENT, 0)
     {
         delete (std::string*)e->user.data1;
-        flag = true;
     }
     ELIF(Event::UI_EVENT, 1)
     {
         delete (std::string*)e->user.data1;
         delete (bool*)e->user.data2;
-        flag = true;
     }
     ELIF(Event::UI_EVENT, 2)
     {
         delete (std::string*)e->user.data1;
         delete (std::string*)e->user.data2;
-        flag = true;
     }
     ELIF(Event::UI_EVENT, 3)
     {
         delete (std::string*)e->user.data1;
         delete (float*)e->user.data2;
-        flag = true;
     }
     ELIF(Event::UI_EVENT, 4)
     {
         delete (std::string*)(e->user.data1);
         delete (std::string*)(e->user.data2);
-        flag = true;
     }
     ELIF(Event::RE_UI_EVENT, 0)
     {
         delete (std::string*)(e->user.data1);
         delete (std::string*)(e->user.data2);
-        flag = true;
     }
     ELIF(Event::RE_UI_EVENT, 1)
     {
         delete (std::string*)(e->user.data1);
         delete (std::string*)(e->user.data2);
-        flag = true;
     }
     ELIF(Event::RE_UI_EVENT, 2)
     {
         delete (std::string*)(e->user.data1);
         delete (std::string*)(e->user.data2);
-        flag = true;
     }
+    ELIF(Event::SETTINGS_EVENT, 0)
+    {
+        NO_OP;
+    }
+    ELIF(Event::SCENE_EVENT, 0)
+    {
+        delete (std::string*)(e->user.data1);
+    }
+    ELIF(Event::SCENE_EVENT, 1)
+    {
+        NO_OP;
+    }
+    else 
+        flag = false;
 
     SDL_assert(!(e->type >= SDL_USEREVENT && e->type < SDL_LASTEVENT && !flag));
 }

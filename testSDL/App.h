@@ -10,16 +10,12 @@
 #include "scene/entity/controller/SimpleEnemyController.h"
 #include "scene/entity/Player.h"
 
-#include "cereal/archives/json.hpp"
-#include <fstream>
-
 
 class App
 {
 private:
 	bool mRunning = true;
 	Timer mTimer = Timer("Global");
-	Scene mScene;
 	ui::Manager mUim;
 	bool mDebugDraw = false;
 public:
@@ -44,18 +40,19 @@ public:
 	}
 	bool Init()
 	{
+		Scene* scene = nullptr;
 		if (true)
 		{	
-			mScene = Scene({ 100,100 });
+			scene = new Scene({ 100,100 });
 	
-			auto& cam = mScene.GetCamera();
+			auto& cam = scene->GetCamera();
 			cam.SetScale({ 4.0f,4.0f });
 
 			std::shared_ptr<Creature> p = std::make_shared<Player>(SDL_FRect{ 48,48,16,16 }, 8, FtoMS(8.0f),8,8);
 			p->AddActionController(std::make_shared<PlayerController>());
 			p->SetStats(StatPack(1, 1, 200.0f));
 			p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
-			if (!mScene.InsertEntity(p))
+			if (!scene->InsertEntity(p))
 			{
 				SDL_assert(false);
 			}
@@ -66,7 +63,7 @@ public:
 				p->AddActionController(std::make_shared<SimpleEnemyController>());
 				p->SetStats(StatPack(1, 1, 20.0f));
 				p->SetDrawBox(SDL_FRect(-2, -2, 4, 4));
-				if (!mScene.InsertEntity(p))
+				if (!scene->InsertEntity(p))
 				{
 					SDL_assert(false);
 				}
@@ -78,7 +75,7 @@ public:
 			{
 				std::ifstream ofs("data.json");
 				cereal::JSONInputArchive arr(ofs);
-				arr(mScene);
+				arr(*scene);
 			}
 			catch (std::exception& e)
 			{
@@ -87,7 +84,7 @@ public:
 				return false;
 			}
 		}
-		Scene::Set(&mScene);
+		Scene::Set(scene);
 		Sound::WaitForLoad();
 		return true;
 	}
@@ -103,7 +100,7 @@ public:
 			while (SDL_PollEvent(&e))
 			{
 				Input::EventHandler(&e);
-				mScene.Handle(&e);
+				Scene::GetMut()->Handle(&e);
 				mUim.Handle(&e);
 				if  (e.type == SDL_QUIT)
 				{
@@ -116,14 +113,14 @@ public:
 			}
 
 			mUim.Update();
-			mScene.Update();
+			Scene::GetMut()->Update();
 
 			Renderer::SetColor(BLACK);
 			Renderer::Clear();
 
-			mScene.Draw();
+			Scene::GetMut()->Draw();
 			if (mDebugDraw)
-				mScene.DebugDraw();
+				Scene::GetMut()->DebugDraw();
 
 			mUim.Draw();
 			if (mDebugDraw)
@@ -135,20 +132,11 @@ public:
 	}
 	~App()
 	{
-		try
-		{
-			std::ofstream ofs("data.json");
-			cereal::JSONOutputArchive arr(ofs);
-			arr(mScene);
-		}
-		catch (std::exception& e)
-		{
-			std::cout << e.what();
-			LOG_PUSH(e.what());
-		}
+
 		LOG_PRINT;
 		Renderer::Free();
 		Window::Free();
 		SDL_Quit();
+		delete Scene::GetMut();
 	}
 };

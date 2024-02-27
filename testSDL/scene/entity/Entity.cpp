@@ -61,8 +61,6 @@ void Entity::Draw()
 	if (mAni)
 	{
 		tex = mAni->Get();
-		if (!tex.tex)
-			Scene::Get()->GetEntities()->PrintTree();
 		SDL_assert(tex.tex);
 	}
 	else

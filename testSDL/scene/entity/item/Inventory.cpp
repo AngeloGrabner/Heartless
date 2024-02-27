@@ -52,6 +52,14 @@ bool Inventory::Full() const
 	return true;
 }
 
+void Inventory::Clear()
+{
+	for (int i = 0; i < mInv.size(); i++)
+	{
+		delete mInv[i];
+	}
+}
+
 bool Inventory::TryPickup(std::unique_ptr<Item> item)
 {
 	for (auto ptr : mInv)

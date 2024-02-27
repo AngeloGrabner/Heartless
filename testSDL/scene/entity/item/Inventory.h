@@ -16,6 +16,8 @@ public:
 	bool Empty() const;
 	bool Full() const;
 
+	void Clear();
+
 	bool TryPickup(std::unique_ptr<Item> item);
 
 	size_t GetSize() const;
@@ -30,3 +32,24 @@ public:
 	template<class Archive>
 	void load(Archive& ar) const;
 };
+
+template<class Archive>
+inline void Inventory::save(Archive& ar) const
+{
+	ar(cereal::make_nvp("count", mInv.size()));
+	for (auto ptr : mInv)
+		ar(cereal::make_nvp("item", std::unique_ptr<Item>(ptr)));
+}
+
+template<class Archive>
+inline void Inventory::load(Archive& ar) const
+{
+	int count = 0;
+	ar(count);
+	std::unique_ptr<Item> ptr;
+	for (int i = 0; i < count; i++)
+	{
+		ar(ptr);
+		mInv.push_back(ptr.release());
+	}
+}

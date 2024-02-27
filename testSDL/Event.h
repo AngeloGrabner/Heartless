@@ -13,6 +13,8 @@ public:
 		RE_UI_EVENT,
 		CAMERA_EVENT,
 		EDITOR_EVENT,
+		SETTINGS_EVENT,
+		SCENE_EVENT,
 		//... game evetns
 		LAST_EVENT // dont use this. it is for init 
 	};
@@ -36,6 +38,11 @@ namespace EventBuilder
 	void ReLabel(const std::string& name, const std::string& text);
 	void ReTextBox(const std::string& name, const std::string& text);
 
+	void SettingsChanged();
+
+	void StartSceneChange(const std::string& sceneName);
+	void FinishedSceneChange();
+
 	void PlayerDied(size_t id); //todo
 }
 namespace EventReceiver
@@ -50,5 +57,9 @@ namespace EventReceiver
 	bool ReLabel(const SDL_Event* e,std::string& name, std::string& text);
 	bool ReTextBox(const SDL_Event* e,std::string& name, std::string& text);
 
+	bool SettingsChanged(const SDL_Event* e);
+
+	bool StartSceneChange(const SDL_Event* e, std::string& sceneName);
+	bool FinishedSceneChange(const SDL_Event* e);
 }
 void UserEventDeallocator(SDL_Event* e);

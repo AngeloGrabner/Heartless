@@ -11,6 +11,8 @@ static constexpr size_t QT_SIZE = 10000;
 
 class Player;
 
+class SceneManager;
+
 class Scene;
 
 class Editor
@@ -47,9 +49,12 @@ class Scene
 {
 private:
 	friend Editor;
+	friend SceneManager;
 	static Scene* sScene;
 
 	using DQTE = DynamicQuadTree<std::shared_ptr<Entity>, SDL_FRect, QT_SIZE>;
+
+	std::string mFileName;
 
 	size_t mWorldId = 0; // <-- todo 
 	std::shared_ptr<DQTE> mDQT = nullptr;
@@ -94,6 +99,7 @@ public:
 	static const Scene* Get();
 	static Scene* GetMut();
 	static void Set(Scene* instance);
+
 private:
 	void InternHandle(const SDL_Event* e);
 	void DebugDrawQt();

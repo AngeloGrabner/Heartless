@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <mutex>
+#include <algorithm>
 
 inline std::vector<std::string> loger;
 inline std::mutex logerMut;
@@ -35,6 +36,9 @@ inline std::mutex logerMut;
 #else
 	#define SDLCHECK(returnVal) (returnVal)
 #endif
+
+// just there to specefy  that a no op is intended
+#define NO_OP do {} while (0)
 
 template<typename T = float>
 constexpr T lerp(T start, T stop, T scale)
@@ -139,3 +143,6 @@ inline long long randomLL(long long max, long long min = 0)
 	return ret % (max - min) + min;
 }
 
+std::string& lower(std::string& str);
+
+std::string& upper(std::string& str);
