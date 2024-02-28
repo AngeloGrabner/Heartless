@@ -102,6 +102,15 @@ void EventBuilder::ReTextBox(const std::string& name, const std::string& text)
     PUSH;
 }
 
+void EventBuilder::ReCheckBox(const std::string& name, bool val)
+{
+    DO_EVENT(Event::RE_UI_EVENT);
+    e.user.code = 3;
+    e.user.data1 = new std::string(name);
+    e.user.data2 = new bool(val);
+    PUSH;
+}
+
 void EventBuilder::SettingsChanged()
 {
     DO_EVENT(Event::SETTINGS_EVENT);
@@ -109,11 +118,12 @@ void EventBuilder::SettingsChanged()
     PUSH;
 }
 
-void EventBuilder::StartSceneChange(const std::string& sceneName)
+void EventBuilder::StartSceneChange(const std::string& sceneName, const SDL_FPoint& destPos, const std::list<std::shared_ptr<Entity>>& carryOver)
 {
     DO_EVENT(Event::SCENE_EVENT);
     e.user.code = 0;
-    e.user.data1 = new std::string(sceneName);
+    e.user.data1 = new std::pair(std::string(sceneName),SDL_FPoint(destPos));
+    e.user.data2 = new std::list<std::shared_ptr<Entity>>(carryOver);
     PUSH;
 }
 
@@ -226,6 +236,17 @@ bool EventReceiver::ReTextBox(const SDL_Event* e,  std::string& name,  std::stri
     return false;
 }
 
+bool EventReceiver::ReCheckBox(const SDL_Event* e, std::string& name, bool& val)
+{
+    IF(Event::RE_UI_EVENT, 3)
+    {
+        name = *(std::string*)(e->user.data1);
+        val = *(bool*)(e->user.data2);
+        return true;
+    }
+    return false;
+}
+
 bool EventReceiver::SettingsChanged(const SDL_Event* e)
 {
     IF(Event::SETTINGS_EVENT, 0)
@@ -235,11 +256,18 @@ bool EventReceiver::SettingsChanged(const SDL_Event* e)
     return false;
 }
 
-bool EventReceiver::StartSceneChange(const SDL_Event* e, std::string& sceneName)
+bool EventReceiver::StartSceneChange(const SDL_Event* e, std::string& sceneName, SDL_FPoint& destPos, std::list<std::shared_ptr<Entity>>& carryOver)
 {
     IF(Event::SCENE_EVENT, 0)
     {
-        sceneName = *(std::string*)(e->user.data1);
+        auto temp = *(std::pair<std::string,SDL_FPoint>*)(e->user.data1);
+        
+        sceneName = temp.first;
+        destPos = temp.second;
+        
+        carryOver.clear();
+        carryOver = *(std::list<std::shared_ptr<Entity>>*)(e->user.data2);
+
         return true;
     }
     return false;
@@ -297,6 +325,11 @@ void UserEventDeallocator(SDL_Event* e)
     {
         delete (std::string*)(e->user.data1);
         delete (std::string*)(e->user.data2);
+    }
+    ELIF(Event::RE_UI_EVENT, 3)
+    {
+        delete (std::pair<std::string, SDL_FPoint>*)(e->user.data1);
+        delete (bool*)(e->user.data2);
     }
     ELIF(Event::SETTINGS_EVENT, 0)
     {

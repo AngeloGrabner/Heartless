@@ -21,6 +21,7 @@ public:
 		HITTABLE,
 		INTERACTABLE,
 		CAN_PICKUP,
+		TRIVIALLY_DESPAWNABLE,
 
 		LAST_INTERNAL //just for counting the members of Flags
 	};
@@ -33,6 +34,7 @@ protected:
 	SDL_FPoint mDir = { 0,0 };
 	size_t mId = InvalidId;
 	std::bitset<Flags::LAST_INTERNAL> mFlags;
+
 	int mTexId = -1;
 	std::unique_ptr<Animation> mAni;
 private:

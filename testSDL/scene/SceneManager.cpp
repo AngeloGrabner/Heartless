@@ -18,12 +18,13 @@ std::string SceneManager::sPath = GAME_PATH_TO_SAVES;
 std::string SceneManager::sFileType = GAME_FILE_TYPE;
 std::string SceneManager::sWorldName;
 Scene* SceneManager::sSwapScene = nullptr;
-
+std::list<std::shared_ptr<Entity>> SceneManager::sCarryOver;
+SDL_FPoint SceneManager::sDestPoint = { 0,0 };
 
 void SceneManager::Handle(const SDL_Event* e)
 {
 	std::string text;
-	if (EventReceiver::StartSceneChange(e, text))
+	if (EventReceiver::StartSceneChange(e, text, sDestPoint, sCarryOver))
 	{
 		LoadScene(text);
 	}
@@ -89,14 +90,18 @@ bool SceneManager::DoWhenSceneReady()
 			SDL_assert(false);
 			return false;
 		}
+		if (sSwapScene)
+		{
+			auto temp = Scene::GetMut();
+			Scene::Set(sSwapScene);
+			sSwapScene = temp;
 
-		auto temp = Scene::GetMut();
-		Scene::Set(sSwapScene);
-		sSwapScene = temp;
+			InsertCarryOver();
 
-		UnloadScene();
+			UnloadScene();
 
-		EventBuilder::FinishedSceneChange();
+			EventBuilder::FinishedSceneChange();
+		}
 		sLoadStatusFlag = NO_LOAD;
 		return true;
 	}
@@ -109,7 +114,6 @@ void SceneManager::InternLoad(const std::string& sceneName)
 	{
 		NO_OP;
 	}
-	Timer LoadTimer = Timer("SceneLoader Timer");
 	sLoadErroFlag = false;
 	sLoadStatusFlag = LOADING;
 	sSwapScene = new Scene();
@@ -140,8 +144,6 @@ void SceneManager::InternLoad(const std::string& sceneName)
 	{
 		sLoadErroFlag = true;
 	}
-	LoadTimer.Stop();
-	std::cout << "InternLoad: " << LoadTimer.to_string() << "\n";
 	sLoadStatusFlag = LOAD_FINISHED;
 }
 
@@ -186,7 +188,6 @@ void SceneManager::InternUnload(const std::string& worldName)
 	{
 		NO_OP;
 	}
-	Timer UnloadTimer = Timer("SceneUnloader Timer");
 	sLoadStatusFlag = LOADING;
 	if (sSwapScene)
 	{
@@ -213,11 +214,19 @@ void SceneManager::InternUnload(const std::string& worldName)
 		sSwapScene = nullptr;
 	}
 	else 
-		sLoadErroFlag = true;
+		sLoadErroFlag = true;  
 	sLoadStatusFlag = LOAD_FINISHED;
 
-	UnloadTimer.Stop();
-	std::cout << "InternUnload: " << UnloadTimer.to_string() << "\n";
+}
+
+void SceneManager::InsertCarryOver()
+{
+	for (auto ptr : sCarryOver)
+	{
+		ptr->HitBox().x = sDestPoint.x - ptr->HitBox().w / 2.0f;
+		ptr->HitBox().y = sDestPoint.y - ptr->HitBox().h / 2.0f;
+		Scene::GetMut()->InsertEntity(ptr);
+	}
 }
 
 void SceneManager::CreateWorld(const std::string& name)
@@ -231,7 +240,14 @@ void SceneManager::CreateWorld(const std::string& name)
 
 void SceneManager::CreateScene(const std::string& name, SDL_Point  worldSizeInTiles)
 {
-	//todo
+	if (!sSwapScene)
+	{
+		sSwapScene = new Scene(worldSizeInTiles);
+		sSwapScene->mFileName = name;
+		UnloadScene();
+	}
+	else
+		SDL_assert(false);
 }
 
 

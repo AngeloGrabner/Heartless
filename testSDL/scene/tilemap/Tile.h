@@ -28,6 +28,12 @@ public:
 	Tile(int bottomTextureId, TopStatus ts = NO_TOP, int topTextureId = -1,
 	bool solid = false, uint8_t light = 0);
 
+	Tile(const Tile& o) = default;
+	Tile(Tile&& o) = default;
+
+	Tile& operator=(const Tile& o) = default;
+	Tile& operator=(Tile&& o) = default;
+
 	bool operator==(const Tile& other);
 
 	//use addanimation to set animations

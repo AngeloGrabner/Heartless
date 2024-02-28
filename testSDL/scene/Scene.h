@@ -34,6 +34,8 @@ class Editor
 	bool mSelecting = false;
 	std::string mSelectedEntityStat = "atk";
 
+	SDL_Point mSceneSize = { 0,0 };
+	std::string mSceneName;
 public:
 
 	void Handle(const SDL_Event* e);
@@ -50,6 +52,7 @@ class Scene
 private:
 	friend Editor;
 	friend SceneManager;
+
 	static Scene* sScene;
 
 	using DQTE = DynamicQuadTree<std::shared_ptr<Entity>, SDL_FRect, QT_SIZE>;

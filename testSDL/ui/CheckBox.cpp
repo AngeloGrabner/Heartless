@@ -22,6 +22,20 @@ ui::CheckBox* ui::CheckBox::SetChecked(bool checked)
 	return this;
 }
 
+void ui::CheckBox::Handle(const SDL_Event* e)
+{
+	Widget::Handle(e);
+	std::string name;
+	bool val;
+	if (EventReceiver::ReCheckBox(e, name, val))
+	{
+		if (name == mName)
+		{
+			mChecked = val;
+		}
+	}
+}
+
 void ui::CheckBox::Update()
 {
 	if (!mActive)

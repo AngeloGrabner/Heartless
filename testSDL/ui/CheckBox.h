@@ -16,6 +16,7 @@ namespace ui
 		CheckBox* SetTextures(int boxTextureId, int checkTextureId);
 		CheckBox* SetChecked(bool checked);
 
+		void Handle(const SDL_Event* e) override;
 		void Update() override;
 		void Draw() override;
 	};

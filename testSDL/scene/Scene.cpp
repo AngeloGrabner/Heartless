@@ -2,6 +2,8 @@
 #include "../Renderer.h"
 #include "../Event.h"
 #include "../Window.h"
+#include "SceneManager.h"
+
 
 #include "entity/Player.h"
 
@@ -67,6 +69,7 @@ void Scene::Handle(const SDL_Event* e)
 
 void Scene::Update()
 {
+	mCam.Clamp(true);
 	mCam.Update();
 	if (mEditing)
 	{
@@ -546,11 +549,54 @@ void Editor::Handle(const SDL_Event* e)
 			}
 			
 		}
+		else if (name == "sceneNameInputField")
+		{
+			mSceneName = text;
+		}
+		else if (name == "sceneWidthInputField")
+		{
+			try
+			{
+				mSceneSize.x = std::stoi(text);
+			}
+			catch (std::exception)
+			{
+				EventBuilder::ReInputField(name, "NaN");
+			}
+		}
+		else if (name == "sceneHeightInputField")
+		{
+			try
+			{
+				mSceneSize.y = std::stoi(text);
+			}
+			catch (std::exception)
+			{
+				EventBuilder::ReInputField(name, "NaN");
+			}
+		}
+	}
+	else if (EventReceiver::Button(e, name))
+	{
+		if (name == "sceneCreateButton")
+		{
+			if (mSceneSize.x > 0 && mSceneSize.y > 0)
+			{
+				SceneManager::CreateScene(mSceneName, mSceneSize);
+			}
+			else
+				SDL_assert(false);
+		}
+		else if (name == "sceneSwapButton")
+		{
+			SceneManager::LoadScene(mSceneName);
+		}
 	}
 }
 
 void Editor::Update(Scene* scene)
 {
+	scene->mCam.Clamp(false);
 	DoCamDrag(scene);
 	DoSelceting(scene);
 }

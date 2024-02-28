@@ -100,6 +100,6 @@ inline void Tilemap::load(Archive& ar)
 
 	for (int i = 0; i < idxMap.size(); i++)
 	{
-		mMap[i] = saveList[idxMap[i]];
+		 mMap[i] = std::make_shared<Tile>(*saveList[idxMap[i]]);
 	}
 }

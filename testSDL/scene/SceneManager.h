@@ -14,6 +14,8 @@ class SceneManager
 	static std::string sWorldName;
 	static std::string sFileType;
 	static Scene* sSwapScene;
+	static std::list<std::shared_ptr<Entity>> sCarryOver;
+	static SDL_FPoint sDestPoint;
 public:
 	static void Handle(const SDL_Event* e);
 	//loads the last loaded scene in the world
@@ -34,4 +36,5 @@ public:
 private:
 	static void InternLoad(const std::string& sceneName);
 	static void InternUnload(const std::string& worldName);
+	static void InsertCarryOver();
 };

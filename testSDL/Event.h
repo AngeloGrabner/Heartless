@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <memory>
 
+class Entity;
+
 class Event
 {
 public:
@@ -37,14 +39,17 @@ namespace EventBuilder
 	void ReInputField(const std::string& name, const std::string& text);
 	void ReLabel(const std::string& name, const std::string& text);
 	void ReTextBox(const std::string& name, const std::string& text);
+	void ReCheckBox(const std::string& name, bool val);
 
 	void SettingsChanged();
 
-	void StartSceneChange(const std::string& sceneName);
+	//todo add carryover list 
+	void StartSceneChange(const std::string& sceneName, const SDL_FPoint& destPos, const std::list<std::shared_ptr<Entity>>& carryOver);
 	void FinishedSceneChange();
 
 	void PlayerDied(size_t id); //todo
 }
+
 namespace EventReceiver
 {
 	bool Button(const SDL_Event* e, std::string& name);
@@ -56,10 +61,12 @@ namespace EventReceiver
 	bool ReIputField(const SDL_Event* e,std::string& name, std::string& text);
 	bool ReLabel(const SDL_Event* e,std::string& name, std::string& text);
 	bool ReTextBox(const SDL_Event* e,std::string& name, std::string& text);
+	bool ReCheckBox(const SDL_Event* e, std::string& name, bool& val);
 
 	bool SettingsChanged(const SDL_Event* e);
 
-	bool StartSceneChange(const SDL_Event* e, std::string& sceneName);
+	//todo add carryover list 
+	bool StartSceneChange(const SDL_Event* e, std::string& sceneName, SDL_FPoint& destPos, std::list<std::shared_ptr<Entity>>& carryOver);
 	bool FinishedSceneChange(const SDL_Event* e);
 }
 void UserEventDeallocator(SDL_Event* e);
