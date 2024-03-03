@@ -138,6 +138,11 @@ SDL_FRect Entity::GetDrawBox() const
 	return mDrawBox;
 }
 
+size_t Entity::GetId() const
+{
+	return mId;
+}
+
 #include "../Scene.h"
 
 SDL_FRect Collide(SDL_FRect pos)

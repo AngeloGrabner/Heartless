@@ -29,7 +29,7 @@ Tile* Tile::AddAnimation(Millis frameTime, unsigned int frameCount, unsigned int
     return this;
 }
 
-void Tile::Update()
+void Tile::Update(SDL_FRect area)
 {
     if (mBottomAni.IsInited())
     {

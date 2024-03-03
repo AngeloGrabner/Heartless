@@ -22,8 +22,9 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{9c28b708-b726-49e1-827d-d423fb25e7e8}</ProjectGuid>
-    <RootNamespace>testSDL</RootNamespace>
+    <RootNamespace>Game</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Game</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -179,6 +180,7 @@
     <ClCompile Include="scene\entity\StatPack.h" />
     <ClCompile Include="scene\Scene.cpp" />
     <ClCompile Include="scene\SceneManager.cpp" />
+    <ClCompile Include="scene\tilemap\SceneSwapTile.cpp" />
     <ClCompile Include="scene\tilemap\Tile.cpp" />
     <ClCompile Include="scene\tilemap\Tilemap.cpp" />
     <ClCompile Include="Settings.cpp" />
@@ -221,6 +223,7 @@
     <ClInclude Include="scene\entity\Player.h" />
     <ClInclude Include="scene\Scene.h" />
     <ClInclude Include="scene\SceneManager.h" />
+    <ClInclude Include="scene\tilemap\SceneSwapTile.h" />
     <ClInclude Include="scene\tilemap\Tile.h" />
     <ClInclude Include="scene\tilemap\Tilemap.h" />
     <ClInclude Include="sdl_type_serializer.h" />
@@ -243,6 +246,9 @@
     <ClInclude Include="ui\Ui.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\res\settings" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

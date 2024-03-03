@@ -75,6 +75,8 @@ public:
 	
 	Entity* SetDrawBox(SDL_FRect offsetbox);
 	SDL_FRect GetDrawBox() const;
+
+	size_t GetId() const;
 };
 
 SDL_FRect Collide(SDL_FRect Pos);

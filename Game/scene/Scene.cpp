@@ -14,8 +14,8 @@ Scene* Scene::sScene = nullptr;
 Scene::Scene(SDL_Point WorldSize)
 	: mWorldSize(WorldSize)
 {
-	mCam = Camera(SDL_FPoint{ (float)WorldSize.x * TILE_SIZE,(float)WorldSize.y * TILE_SIZE });
-	mTM = Tilemap(WorldSize.x, WorldSize.y, { 16.1f,16.1f });
+	mCam = Camera(SDL_FPoint{ (float)WorldSize.x * TILE_SIZE ,(float)WorldSize.y * TILE_SIZE });
+	mTM = Tilemap(WorldSize.x, WorldSize.y, { TILE_SIZE + .44f,TILE_SIZE + .44f });
 	for (int y  =0; y < WorldSize.y; y++)
 		for (int x = 0; x < WorldSize.x; x++)
 		{

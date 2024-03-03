@@ -16,6 +16,7 @@ bool Renderer::Init(SDL_Window* window)
 		return false;
 	}
 	SDL_RenderGetViewport(sRen, &sViewPort);
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 	return true;
 }
 void Renderer::Free()

@@ -40,7 +40,7 @@ public:
 	Tile* AddAnimation(Millis frameTime, unsigned int frameCount,
 		unsigned int animationCount = 1, bool isBottom = true);
 
-	virtual void Update();
+	virtual void Update(SDL_FRect area);
 	virtual void Draw(SDL_FRect area);
 	virtual void DrawOnTop(SDL_FRect area);
 	virtual void Handle(const SDL_Event* e);

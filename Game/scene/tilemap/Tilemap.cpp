@@ -44,7 +44,7 @@ void Tilemap::Update(SDL_FRect area)
     {
         for (int x = std::max(0, idx.x); x < std::min(idx.x + idx.w, mSize.x); x++)
         {
-            mMap[c21d(x, y)]->Update();
+            mMap[c21d(x, y)]->Update({ mDrawSize.x * x,mDrawSize.y * y, mDrawSize.x,mDrawSize.y });
         }
     }
 }
