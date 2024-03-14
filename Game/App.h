@@ -22,7 +22,7 @@ private:
 	bool mRunning = true;
 	Timer mTimer = Timer("Global");
 	ui::Manager mUim;
-	bool mDebugDraw = false;
+	bool mDebugDraw = true;
 public:
 	App()
 	{

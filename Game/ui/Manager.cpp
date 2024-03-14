@@ -117,12 +117,15 @@ void ui::Manager::Activate(const std::string& name, bool active)
 //btw it might look like a mem leak, but it isnt, see ui::widget for details
 void ui::Manager::Init()
 {
+	using namespace ui;
+
 	SDL_Point winSize = Window::GetSize();
 	float aspectRatio = winSize.x / (float)winSize.y;
 
 	{ // editor checkbox
 		SDL_FRect boxArea = SDL_FRect(0, 0, winSize.x / 15.0f, winSize.y * aspectRatio / 15.0f);
-		ui::Widget* editorBox =
+		
+		Widget* editorBox =
 			(new ui::CheckBox(nullptr, boxArea, "editorCheckBox", WIDGET_BOTTOM, WIDGET_RIGHT))
 			->SetTextures(TEX_ID_CHECKBOX_FRAME, TEX_ID_CHECKBOX_CHECK); // see data.csv 
 		mWidgets.push_back(std::unique_ptr<ui::Widget>(editorBox));
@@ -133,201 +136,144 @@ void ui::Manager::Init()
 
 		ui::Widget* editorFrame =
 			(new ui::Frame(nullptr, frameArea, "editorFrame", TEX_ID_FRAME, WIDGET_RIGHT, WIDGET_TOP))
+			->SetBorder({2,2,2,2})
 			->Activate(false);
 
 		mWidgets.push_back(std::unique_ptr<ui::Widget>(editorFrame));
+		
+		SDL_FRect headerArea = SDL_FRect(0, 0, editorFrame->GetInnerArea().w, editorFrame->GetInnerArea().h/10);
+		// editor pannel header 
+		{
+			Div* header = (new Div(editorFrame, headerArea));
 
-		Widget* layerDiv = new ui::Div(editorFrame, SDL_FRect(0, 5, editorFrame->GetInnerArea().w, editorFrame->GetInnerArea().h / 15.0f), WIDGET_CENTER, WIDGET_TOP);
 
-		{ //slider div
+			SDL_FRect rowArea = { 0,0,header->GetInnerArea().w/2, header->GetInnerArea().h /2};
+			
+			(new Label(header, rowArea, "editorFrameHeaderLabel1"))
+				->SetText("Draw");
+			
+			{ // row 0 check div and checks
+				auto checkDivArea = rowArea;
+				checkDivArea.x = checkDivArea.w;
 
-			SDL_FRect sliderArea = SDL_FRect(0, 0, layerDiv->GetInnerArea().w / 2.0f, layerDiv->GetInnerArea().h);
+				Div* checkDiv = (new Div(header, checkDivArea));
 
-			(new ui::Slider(layerDiv, sliderArea, "editorLayerSlider", false, WIDGET_RIGHT, WIDGET_CENTER, TEX_ID_SLIDER, { layerDiv->GetInnerArea().h / 2.0f,layerDiv->GetInnerArea().h - 2 }))
-				->SetSnappiness(true, 3);
+				SDL_FRect checkArea(0, 0, 0, 0);
+				checkArea.w = checkDiv->GetInnerArea().w;
+				checkArea.h = checkDiv->GetInnerArea().h;
 
-			SDL_FRect textboxArea = SDL_FRect(0, 0, layerDiv->GetInnerArea().w / 2.0f, layerDiv->GetInnerArea().h);
 
-			(new ui::Label(layerDiv, textboxArea, "editorLayerLable", WIDGET_LEFT, WIDGET_CENTER))
-				->SetText("Layer");
+				checkArea.w /= 3.0f;
+
+				checkArea.w < checkArea.h ? checkArea.h = checkArea.w : checkArea.w = checkArea.h;	//min()
+
+				(new CheckBox(checkDiv, checkArea, "editorFrameHeaderCheck1"))
+					->SetTextures(TEX_ID_CHECKBOX_FRAME, TEX_ID_CHECKBOX_CHECK);
+				(new CheckBox(checkDiv, checkArea, "editorFrameHeaderCheck2", WIDGET_CENTER))
+					->SetTextures(TEX_ID_CHECKBOX_FRAME, TEX_ID_CHECKBOX_CHECK);
+				(new CheckBox(checkDiv, checkArea, "editorFrameHeaderCheck3", WIDGET_RIGHT))
+					->SetTextures(TEX_ID_CHECKBOX_FRAME, TEX_ID_CHECKBOX_CHECK);
+			}
+
+			rowArea.y += rowArea.h;
+
+			(new Label(header, rowArea, "editorFrameHeaderLabel2"))
+				->SetText("Selecting");
+
+			rowArea.x += rowArea.w;
+
+			(new Select(header, rowArea, "editorFrameHeaderSelectingSelect", TEX_ID_SELECT))
+				->AddOption("Tile")
+				->AddOption("Entity");
 		}
+		
+		SDL_FRect bodyDivArea = SDL_FRect(0, headerArea.h, editorFrame->GetInnerArea().w, editorFrame->GetInnerArea().h - headerArea.h);
 
-		Widget* tileDiv = (new ui::Div(editorFrame, SDL_FRect(0, editorFrame->GetInnerArea().h / 15.0f, editorFrame->GetInnerArea().w, editorFrame->GetInnerArea().h - editorFrame->GetInnerArea().h / 15.0f)))
-			->SetName("editorTileDiv")
-			->SetBorder({ 5,5,5,5 });
+		// editor pannel Tile
+		{
+			Widget* tileDiv = (new Div(editorFrame, bodyDivArea))
+				->SetName("editorFrameTileDiv")
+				->SetBorder({2,2,2,2});
 
-		{ // tile div
-			SDL_FRect selectTextureArea = SDL_FRect(0, 0, tileDiv->GetInnerArea().w / 2.0f, tileDiv->GetInnerArea().h / 15.0f);
+			SDL_FRect area = { 0,0,tileDiv->GetInnerArea().w/2,tileDiv->GetInnerArea().h/ 16};
 
-			(new ui::Select(tileDiv, selectTextureArea, "editorTileTextureSelect", TEX_ID_SELECT))
-				->AddOption("gras")
-				->AddOption("sand")
-				->AddOption("dirt")
-				->AddOption("snow")
-				->AddOption("stone brick w")
-				->AddOption("dirt w")
-				->AddOption("stone w")
 
-				->SetBorder({ 2,2,2,2 });
+			(new Label(tileDiv, area, "editorFrameTileLabel1"))
+				->SetText("Type")
+				->SetAlignment(WIDGET_LEFT);
+			(new Select(tileDiv, area, "editorFrameTileTypeSelect", TEX_ID_SELECT,WIDGET_RIGHT))
+				->AddOption("Tile")
+				->AddOption("Swap");
 
-			(new ui::Select(tileDiv, selectTextureArea, "editorTileSubTextureSelect", TEX_ID_SELECT, WIDGET_RIGHT))
-				->AddOption("full")
-				->AddOption("left")
-				->AddOption("right")
-				->AddOption("bottom")
-				->AddOption("top")
-				->AddOption("inner t l")
-				->AddOption("inner t r")
-				->AddOption("inner b l")
-				->AddOption("inner b r")
-				->AddOption("outer t l")
-				->AddOption("outer t r")
-				->AddOption("outer b l")
-				->AddOption("outer b r")
+			area.y += area.h;
 
-				->SetBorder({ 2,2,2,2 });
+			{ // double checkbox row 
+				SDL_FRect tempArea = area;
+				tempArea.w *= 0.8f;
 
-			{
-				SDL_FRect checkboxArea = SDL_FRect(0, tileDiv->GetInnerArea().h / 14.0f, tileDiv->GetInnerArea().w / 3.0f, 20);
+				(new Label(tileDiv, tempArea, "editorFrameTileLabel2"))
+					->SetText("Solid")
+					->SetAlignment(WIDGET_LEFT);
 
-				ui::Widget* solidDiv = new ui::Div(tileDiv, checkboxArea);
+				tempArea.x += tempArea.w;
+				tempArea.w = area.w * .2f;
 
-				(new ui::Label(solidDiv, SDL_FRect(0, 0, 100, 20), "editorTileSolidLabel"))
-					->SetAlignment(WIDGET_LEFT)
-					->SetText("Solid");
+				tempArea.w < tempArea.h ? tempArea.h = tempArea.w : tempArea.w = tempArea.h;
 
-				(new ui::CheckBox(solidDiv, SDL_FRect(0, 0, 20, 20), "editorTileSolidCheckbox", WIDGET_RIGHT))
+				(new CheckBox(tileDiv, tempArea, "editorFrameTileSolidCheckBox"))
 					->SetTextures(TEX_ID_CHECKBOX_FRAME, TEX_ID_CHECKBOX_CHECK);
 
+				tempArea.h = area.h;
+				tempArea.x += tempArea.w;
+				tempArea.w = area.w * .8f;
+
+				(new Label(tileDiv,tempArea, "editorFrameTileLabel3"))
+					->SetText("Light")
+					->SetAlignment(WIDGET_LEFT);
+
+				tempArea.x += tempArea.w;
+				tempArea.w = area.w * .2f;
+
+				tempArea.w < tempArea.h ? tempArea.h = tempArea.w : tempArea.w = tempArea.h;
+
+				(new CheckBox(tileDiv, tempArea, "editorFrameTileLightCheckBox"))
+					->SetTextures(TEX_ID_CHECKBOX_FRAME, TEX_ID_CHECKBOX_CHECK);
 			}
 
-			{
-				SDL_FRect tileTopArea = SDL_FRect(0, tileDiv->GetInnerArea().h / 14.0f * 2, tileDiv->GetInnerArea().w, tileDiv->GetInnerArea().h / 20.0f);
-
-				(new ui::Select(tileDiv, tileTopArea, "editorTileTopSelect", TEX_ID_SELECT))
-					->AddOption("No Top")
-					->AddOption("Top")
-					->AddOption("Top on Top")
-
-					->SetBorder({ 2,2,2,2 });
-			}
-
-		}
-
-		Widget* entityDiv = (new ui::Div(editorFrame, SDL_FRect(0, editorFrame->GetInnerArea().h / 15.0f, editorFrame->GetInnerArea().w, editorFrame->GetInnerArea().h - editorFrame->GetInnerArea().h / 15.0f)))
-			->SetName("editorEntityDiv")
-			->SetBorder({ 5, 5, 5, 5 })
-			->Activate(false);;
-
-		{ // entity div
-
-			/* plan
-
-				input x
-				input y
-				select stats
-				input stats
-			div item
-				input slot
-				select itme
-				button insert
-				button delete
-			div createNdelete
-				select type
-				button delete
-				button insert
-			*/
-			Widget* statsDiv = new ui::Div(entityDiv, SDL_FRect(0, 0, entityDiv->GetInnerArea().w, entityDiv->GetInnerArea().h / 4.0f));
+			area.y += area.h;
 
 
-			{ // div stats
-				auto Area = SDL_FRect(0, 0, statsDiv->GetInnerArea().w, statsDiv->GetInnerArea().h / 4.1f);
-				(new ui::InputField(statsDiv, Area, "editorEntityXInputField"))
-					->SetTexture(TEX_ID_INPUTFIELD)
-					->SetText("X")
-					->SetBorder({ 5,5,5,5 });
+			(new Label(tileDiv, area, "editorFrameTileLabel4"))
+				->SetText("Top")
+				->SetAlignment(WIDGET_LEFT);
 
-				Area.y += Area.h;
+			(new Select(tileDiv, area, "editorFrameTileTopSelect", TEX_ID_SELECT, WIDGET_RIGHT))
+				->AddOption("No Top")
+				->AddOption("Top")
+				->AddOption("Top on Top");
 
-				(new ui::InputField(statsDiv, Area, "editorEntityYInputField"))
-					->SetTexture(TEX_ID_INPUTFIELD)
-					->SetText("Y")
-					->SetBorder({ 5,5,5,5 });
+			area.y += area.h;
 
-				Area.y += Area.h;
+			(new Label(tileDiv, area, "editorFrameTileLabel5"))
+				->SetText("Tex Top")
+				->SetAlignment(WIDGET_LEFT);
 
-				(new ui::Select(statsDiv, Area, "editorEntityStatsSelect", TEX_ID_SELECT))
-					->AddOption("atk")
-					->AddOption("hp")
-					->AddOption("spd")
+			(new Select(tileDiv, area, "editorFrameTileTexTopSelect", TEX_ID_SELECT, WIDGET_RIGHT))
+				->AddOption("Bottom")
+				->AddOption("Top");
 
-					->SetBorder({ 2, 2, 2, 2 });
+			area.y += area.h;
 
-				Area.y += Area.h;
+			(new Label(tileDiv, area, "editorFrameTileLabel6"))
+				->SetText("Tex")
+				->SetAlignment(WIDGET_LEFT);
 
-				(new ui::InputField(statsDiv, Area, "editorEntityStatsInputField"))
-					->SetTexture(TEX_ID_INPUTFIELD)
-					->SetText("Value")
-					->SetBorder({ 5,5,5,5 });
-			}
+			(new Select(tileDiv, area, "editorFrameTileTexSelect", TEX_ID_SELECT, WIDGET_RIGHT))
+				->AddOption("todo grass");
 
-			Widget* itemDiv = new ui::Div(entityDiv, SDL_FRect(0, 0, entityDiv->GetInnerArea().w, entityDiv->GetInnerArea().h / 4.0f), WIDGET_LEFT, WIDGET_CENTER);
+			area.y += area.h;
 
-			{
-				auto Area = SDL_FRect(0, 0, itemDiv->GetInnerArea().w, itemDiv->GetInnerArea().h / 4.1);
-
-				(new ui::InputField(itemDiv, Area, "editorEntityItemSoltInputField"))
-					->SetText("Slot number")
-					->SetTexture(TEX_ID_INPUTFIELD)
-					->SetBorder({ 5,5,5,5 });
-
-				Area.y += Area.h;
-
-				(new ui::Select(itemDiv, Area, "editorEntityItemSelect", TEX_ID_SELECT))
-					->AddOption("todo")
-
-					->SetBorder({ 2,2,2,2 });
-
-				Area.y += Area.h;
-
-				(new ui::Button(itemDiv, Area, "editorEntityItemInsertButton", TEX_ID_BUTTON))
-					->SetCooldown(50)
-					->SetText("Insert itm")
-					->SetBorder({ 2,2,2,2 });
-
-				Area.y += Area.h;
-
-				(new ui::Button(itemDiv, Area, "editorEntityItemDeleteButton", TEX_ID_BUTTON))
-					->SetCooldown(50)
-					->SetText("Delete itm")
-					->SetBorder({ 2,2,2,2 });
-			}
-
-			ui::Widget* createNDelteDiv = new ui::Div(entityDiv, SDL_FRect(0, 0, entityDiv->GetInnerArea().w, entityDiv->GetInnerArea().h / 4.0f), WIDGET_LEFT, WIDGET_BOTTOM);
-
-			{
-				auto Area = SDL_FRect(0, 0, itemDiv->GetInnerArea().w, itemDiv->GetInnerArea().h / 4.1);
-
-				(new ui::Select(createNDelteDiv, Area, "editorEntityTypeSelect", TEX_ID_SELECT))
-					->AddOption("todo type")
-
-					->SetBorder({ 2,2,2,2 });
-
-				Area.y += Area.h;
-
-				(new ui::Button(createNDelteDiv, Area, "editorEntityInsertButton", TEX_ID_BUTTON))
-					->SetCooldown(50)
-					->SetText("Insert entt")
-					->SetBorder({ 2,2,2,2 });
-
-				Area.y += Area.h;
-
-
-				(new ui::Button(createNDelteDiv, Area, "editorEntityDeleteButton", TEX_ID_BUTTON))
-					->SetCooldown(50)
-					->SetText("Delete entt")
-					->SetBorder({ 2,2,2,2 });
-			}
+			//todo label & select for tex rotation
 		}
 	}
 

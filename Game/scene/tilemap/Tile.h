@@ -22,6 +22,7 @@ protected:
 
 	bool mIsSolid = false;
 	uint8_t mLight = 0; //todo: add a tint for lighting in Draw()
+	//bool lightsource
 
 public:
 	Tile() = default;//for cereal
